@@ -27,22 +27,24 @@ public class CoreAppApplication implements CommandLineRunner {
 	 * 
 	 */
 
-	@Autowired
-	@Qualifier("dictionaryServices")
-	private Object dictionaries;
+	/*
+	 * @Autowired
+	 * 
+	 * @Qualifier("dictionaryServices") private Object dictionaries;
+	 */
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void run(String... args) throws Exception {
 
-		if (dictionaries instanceof List) {
-
-			List<Dictionary> dis = (List<Dictionary>) dictionaries;
-			for (Dictionary dictionary : dis) {
-				System.out.println(dictionary.getName());
-			}
-
-		}
+		/*
+		 * if (dictionaries instanceof List) {
+		 * 
+		 * List<Dictionary> dis = (List<Dictionary>) dictionaries; for (Dictionary
+		 * dictionary : dis) { System.out.println(dictionary.getName()); }
+		 * 
+		 * }
+		 */
 
 	}
 

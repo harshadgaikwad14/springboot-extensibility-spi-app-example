@@ -5,6 +5,6 @@ public class ExtendedDictionary implements Dictionary {
 	public String getName() {
 
 		System.out.println("ExtendedDictionary :: getName :: called :: Version 2");
-		return getClass().getSimpleName();
+		return getClass().getSimpleName()+" Version 2";
 	}
 }
