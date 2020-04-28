@@ -6,7 +6,8 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.5.RELEASE</version>
+		<!-- <version>2.2.5.RELEASE</version> -->
+		<version>2.2.1.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
@@ -16,7 +17,12 @@
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
 	</properties>
 
 	<dependencies>
@@ -53,18 +59,39 @@
 			<artifactId>custom-extensible-impl</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jdbc</artifactId>
+			
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+		<!-- <dependency> <groupId>mysql</groupId> <artifactId>mysql-connector-java</artifactId> 
+			<version>5.1.47</version> </dependency> -->
+		<!-- https://mvnrepository.com/artifact/com.oracle.jdbc/ojdbc8 -->
+		<dependency>
+			<groupId>com.oracle.jdbc</groupId>
+			<artifactId>ojdbc8</artifactId>
+			<version>12.2.0.1</version>
+			<!-- <scope>system</scope>
+			<systemPath>${project.basedir}/src/main/resources/oracle/ojdbc8.jar</systemPath> -->
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
-			<!-- <plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin> -->
+
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-install-plugin</artifactId> 
+				<version>2.5.1</version> <executions> <execution> <id>install-ojdbc8-jar</id> 
+				<phase>validate</phase> <configuration> <groupId>com.oracle.jdbc</groupId> 
+				<artifactId>ojdbc8</artifactId> <version>12.2.0.1</version> <packaging>jar</packaging> 
+				<file>${project.basedir}/src/main/resources/oracle/ojdbc8.jar</file> <generatePom>true</generatePom> 
+				</configuration> <goals> <goal>install-file</goal> </goals> </execution> 
+				</executions> </plugin> -->
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				
+
 				<executions>
 					<execution>
 						<configuration>

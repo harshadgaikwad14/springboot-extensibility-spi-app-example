@@ -3,16 +3,13 @@ package com.example.demo;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.serviceloader.ServiceListFactoryBean;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class CoreAppApplication implements CommandLineRunner {
+public class CoreAppApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(CoreAppApplication.class, args);
@@ -33,39 +30,37 @@ public class CoreAppApplication implements CommandLineRunner {
 	 * @Qualifier("dictionaryServices") private Object dictionaries;
 	 */
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void run(String... args) throws Exception {
-
-		/*
-		 * if (dictionaries instanceof List) {
-		 * 
-		 * List<Dictionary> dis = (List<Dictionary>) dictionaries; for (Dictionary
-		 * dictionary : dis) { System.out.println(dictionary.getName()); }
-		 * 
-		 * }
-		 */
-
-	}
-
 	@Bean
-	public List<Dictionary> dictionaryServices() {
-		System.out.println("Crating proxy for Dictionary implementations");
+	public List<ExTaxTypeSpi> exTaxTypeSpiService() {
+		System.out.println("Crating proxy for exTaxTypeSpiService implementations");
 
-		List<Dictionary> senders = getAvailableDictionaryServices();
-		System.out.println("Found Dictionary implementations" + senders.size());
+		List<ExTaxTypeSpi> exTaxTypeSpis = getExTaxTypeSpiServices();
+		System.out.println("Found exTaxTypeSpiService implementations" + exTaxTypeSpis.size());
 
-		return senders;// createProxiedNotificationSendersAsSpringWillNotCreateProxyForThese(senders);
+		return exTaxTypeSpis;// createProxiedNotificationSendersAsSpringWillNotCreateProxyForThese(senders);
 	}
+	
+	/*
+	 * @Bean public ExTaxTypeValidationSpi exTaxTypeValidationSpiService() {
+	 * System.out.println("Crating proxy for exTaxTypeSpiService implementations");
+	 * 
+	 * ExTaxTypeValidationSpi exTaxTypeValidationSpi =
+	 * getExTaxTypeValidationSpiServices();
+	 * 
+	 * 
+	 * return exTaxTypeValidationSpi;//
+	 * createProxiedNotificationSendersAsSpringWillNotCreateProxyForThese(senders);
+	 * }
+	 */
 
-	private List<Dictionary> getAvailableDictionaryServices() {
-		List<Dictionary> senders = new ArrayList<>();
+	private List<ExTaxTypeSpi> getExTaxTypeSpiServices() {
+		List<ExTaxTypeSpi> senders = new ArrayList<>();
 		try {
 			ServiceListFactoryBean serviceListFactoryBean = new ServiceListFactoryBean();
-			serviceListFactoryBean.setServiceType(Dictionary.class);
+			serviceListFactoryBean.setServiceType(ExTaxTypeSpi.class);
 			serviceListFactoryBean.afterPropertiesSet();
 
-			senders = (List<Dictionary>) serviceListFactoryBean.getObject();
+			senders = (List<ExTaxTypeSpi>) serviceListFactoryBean.getObject();
 		} catch (Exception ex) {
 			System.out.println("Unable to retrieve Dictionary sender implementations" + ex.getMessage());
 			ex.printStackTrace();
@@ -73,5 +68,20 @@ public class CoreAppApplication implements CommandLineRunner {
 
 		return senders;
 	}
+
+	/*
+	 * private ExTaxTypeValidationSpi getExTaxTypeValidationSpiServices() {
+	 * ExTaxTypeValidationSpi senders = null; try { ServiceListFactoryBean
+	 * serviceListFactoryBean = new ServiceListFactoryBean();
+	 * serviceListFactoryBean.setServiceType(ExTaxTypeValidationSpi.class);
+	 * serviceListFactoryBean.afterPropertiesSet();
+	 * 
+	 * senders = (ExTaxTypeValidationSpi) serviceListFactoryBean.getObject(); }
+	 * catch (Exception ex) {
+	 * System.out.println("Unable to retrieve Dictionary sender implementations" +
+	 * ex.getMessage()); ex.printStackTrace(); }
+	 * 
+	 * return senders; }
+	 */
 
 }
