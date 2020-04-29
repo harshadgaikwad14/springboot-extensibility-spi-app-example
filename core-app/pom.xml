@@ -10,7 +10,7 @@
 		<version>2.2.1.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
+	<groupId>com.intellectdesign.igtb.lms</groupId>
 	<artifactId>core-app</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>core-app</name>
@@ -50,12 +50,12 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.example.demo</groupId>
+			<groupId>com.intellectdesign.igtb.lms</groupId>
 			<artifactId>extensible-interface</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.example.demo</groupId>
+			<groupId>com.intellectdesign.igtb.lms</groupId>
 			<artifactId>custom-extensible-impl</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
@@ -95,7 +95,7 @@
 				<executions>
 					<execution>
 						<configuration>
-							<mainClass>com.example.demo.CoreAppApplication</mainClass>
+							<mainClass>com.intellectdesign.igtb.lms.CoreAppApplication</mainClass>
 							<layout>ZIP</layout>
 						</configuration>
 						<goals>
