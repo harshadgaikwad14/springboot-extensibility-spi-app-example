@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.model.ExTaxType;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -75,6 +77,8 @@ public class ExTaxTypeSpiImpl implements ExTaxTypeSpi {
 		return val;
 
 	}
+	
+	
 
 	@Override
 	public Object save(final Object object, final Connection connObj) throws Exception {

@@ -17,6 +17,8 @@ public interface ExTaxTypeSpi {
 		return null;
 	}
 
+
+	
 	default Object update(final Object object, final Object jdbcTemplate) throws Exception {
 		return null;
 	}
