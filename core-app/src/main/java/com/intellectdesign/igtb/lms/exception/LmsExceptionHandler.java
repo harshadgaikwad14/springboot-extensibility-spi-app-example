@@ -1,6 +1,5 @@
 package com.intellectdesign.igtb.lms.exception;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -13,39 +12,29 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.intellectdesign.igtb.lms.controller.TaxRestController;
-
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 public class LmsExceptionHandler extends ResponseEntityExceptionHandler {
-	
-	private static final Logger LOGGER=LoggerFactory.getLogger(LmsExceptionHandler.class);
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(LmsExceptionHandler.class);
 
 	@ExceptionHandler(ValidationException.class)
 	protected ResponseEntity<Object> handleEntityNotFound(ValidationException ex) {
-		
+
 		LOGGER.info("Exception Handling for Payload Validation");
-		
-		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
+
+		final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
 		apiError.setMessage("Validation Error");
 		apiError.setDebugMessage("Validation Failed");
-		final String [] validationErrorString = ex.getMessage().split("~~");
-		if(validationErrorString !=null )
-		{
-			List<ApiSubError> subErrors =new ArrayList<>();
-			apiError.setSubErrors(subErrors );
-			for (final String error : validationErrorString) {
-				final ApiSubError apiSubError = new ApiValidationError(null, error);
-				subErrors.add(apiSubError);
-				
-			}
-			
+
+		final List<ApiSubError> subErrors = ex.getErrorList();
+		if (!subErrors.isEmpty()) {
+
+			apiError.setSubErrors(subErrors);
+
 		}
 		return buildResponseEntity(apiError);
 	}
-
-	
 
 	@ExceptionHandler(DataNotFoundException.class)
 	protected ResponseEntity<Object> handleEntityNotFound(DataNotFoundException ex) {
@@ -53,10 +42,7 @@ public class LmsExceptionHandler extends ResponseEntityExceptionHandler {
 		apiError.setMessage(ex.getMessage());
 		return buildResponseEntity(apiError);
 	}
-	
-	
 
-	
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<Object> handleEntityNotFound(Exception ex) {
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
@@ -65,8 +51,6 @@ public class LmsExceptionHandler extends ResponseEntityExceptionHandler {
 		return buildResponseEntity(apiError);
 	}
 
-	
-	
 	private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
 		return new ResponseEntity<>(apiError, apiError.getStatus());
 	}
