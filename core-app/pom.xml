@@ -51,7 +51,7 @@
 
 		<dependency>
 			<groupId>com.intellectdesign.igtb.lms</groupId>
-			<artifactId>extensible-interface</artifactId>
+			<artifactId>common-interface</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>

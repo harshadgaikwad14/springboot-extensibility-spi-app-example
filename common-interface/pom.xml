@@ -3,13 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.intellectdesign.igtb.lms</groupId>
-	<artifactId>custom-extensible-impl</artifactId>
+	<artifactId>common-interface</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-
 
 	<properties>
 		<spring.framework>5.2.1.RELEASE</spring.framework>
-
+		<jackson>2.10.0</jackson>
 
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -24,19 +23,7 @@
 	</properties>
 
 
-
 	<dependencies>
-		<dependency>
-			<groupId>com.intellectdesign.igtb.lms</groupId>
-			<artifactId>common-interface</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.10.2</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
@@ -53,14 +40,28 @@
 			<version>${spring.framework}</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.oracle.jdbc/ojdbc8 -->
+<!-- 
+		https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
 		<dependency>
-			<groupId>com.oracle.jdbc</groupId>
-			<artifactId>ojdbc8</artifactId>
-			<version>12.2.0.1</version>
-			<!-- <scope>system</scope> <systemPath>${project.basedir}/src/main/resources/oracle/ojdbc8.jar</systemPath> -->
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson}</version>
 		</dependency>
-		<!-- <dependency> <groupId>com.zaxxer</groupId> <artifactId>HikariCP</artifactId> 
-			<version>2.6.1</version> </dependency> -->
+
+		https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>${jackson}</version>
+		</dependency>
+
+		https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson}</version>
+		</dependency>
+ -->
 	</dependencies>
+
 </project>

@@ -8,7 +8,6 @@ import javax.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -39,10 +38,6 @@ public class SweepStructureRepository {
 
 	@Autowired
 	PlatformTransactionManager transactionManager;
-
-	@Autowired
-	@Qualifier("exTaxTypeSpiService")
-	private Object exTaxTypeSpiService;
 
 	@Autowired
 	private ExSweepStructureSpi exSweepStructureSpiService;
@@ -128,26 +123,24 @@ public class SweepStructureRepository {
 
 		int val = 0;
 
-		System.out.println("ExTaxTypeSpiImpl :: save : connObj.getAutoCommit() : "
-				+ jdbcTemplate.getDataSource().getConnection().getAutoCommit());
+		LOGGER.info("connObj.getAutoCommit() : {} ", jdbcTemplate.getDataSource().getConnection().getAutoCommit());
 
-		System.out.println("============== Parent Object Save Start =========================");
+		LOGGER.info("============== Parent Object Save Start =========================");
 
 		try {
 
 			val = jdbcTemplate.update(
 					"INSERT INTO OLM_STRUCTURE_HEADER( NBR_STRCID,COD_SUBPROD,COD_PRODUCT,DAT_STRCEFF,NBR_PRIORITY,NBR_INSTRUCTIONS,NBR_STRGRPID,FLG_STRTYPE,DAT_STRCSETUP,FLG_LOCK ) VALUES ("
 							+ sweepStructure.getStructureId() + ",'" + sweepStructure.getSubProductCode() + "','"
-							+ sweepStructure.getProductCode() + "', TO_DATE('"+sweepStructure.getEffDate() +" 00:00:00' , 'YYYY-MM-DD HH24:MI:SS') ,"
-							+ sweepStructure.getNbrPriority() + "," + sweepStructure.getNoOfInstructions() + ","
-							+ sweepStructure.getNbrGroupId() + ",'" + sweepStructure.getStructureType() + "', TO_DATE('"+sweepStructure.getEffDate() +" 00:00:00' , 'YYYY-MM-DD HH24:MI:SS'),'"
-							+ sweepStructure.getLockFlag() + "')");
-			
-			
+							+ sweepStructure.getProductCode() + "', TO_DATE('" + sweepStructure.getEffDate()
+							+ " 00:00:00' , 'YYYY-MM-DD HH24:MI:SS') ," + sweepStructure.getNbrPriority() + ","
+							+ sweepStructure.getNoOfInstructions() + "," + sweepStructure.getNbrGroupId() + ",'"
+							+ sweepStructure.getStructureType() + "', TO_DATE('" + sweepStructure.getEffDate()
+							+ " 00:00:00' , 'YYYY-MM-DD HH24:MI:SS'),'" + sweepStructure.getLockFlag() + "')");
 
-			System.out.println("val : " + val);
+			LOGGER.info("val : {} ", val);
 
-			System.out.println("============== extended Object Save Start =========================");
+			LOGGER.info("============== extended Object Save Start =========================");
 
 			if (sweepStructure.getExtObject() != null) {
 
@@ -155,13 +148,13 @@ public class SweepStructureRepository {
 
 				extendedObject = (int) exSweepStructureSpiService.save(sweepStructure.getExtObject(), jdbcTemplate);
 
-				System.out.println("extendedObject insert Reponse : " + extendedObject);
+				LOGGER.info("extendedObject insert Reponse : " + extendedObject);
 			}
 
-			System.out.println("============== extended Object Save End =========================");
+			LOGGER.info("============== extended Object Save End =========================");
 
 			transactionManager.commit(transactionStatus);
-			System.out.println("============== Parent Object Save end =========================");
+			LOGGER.info("============== Parent Object Save end =========================");
 		} catch (Exception ex) {
 			val = 0;
 			transactionManager.rollback(transactionStatus);

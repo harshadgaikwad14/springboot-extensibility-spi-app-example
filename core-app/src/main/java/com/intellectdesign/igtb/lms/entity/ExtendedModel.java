@@ -11,7 +11,6 @@ public abstract class ExtendedModel implements Serializable {
 
 	public ExtendedModel() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
