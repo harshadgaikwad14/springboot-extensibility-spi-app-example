@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.intellectdesign.igtb.lms.ExCommonSpi;
+import com.intellectdesign.igtb.lms.ExSweepInstructionSpi;
 import com.intellectdesign.igtb.lms.ExSweepStructureSpi;
 
 @Configuration
@@ -71,5 +72,35 @@ public class ServiceLoaderConfig {
 
 		return senders;
 	}
+
+	
+	@Bean
+	public ExSweepInstructionSpi exSweepInstructionSpiService() {
+		LOGGER.info("Crating proxy for ExSweepInstructionSpi implementations");
+
+		List<ExSweepInstructionSpi> exsweepInstructionSpis = getExSweepInstructionSpiServices();
+		LOGGER.info("Found ExSweepInstructionSpi implementations : {} ", exsweepInstructionSpis.size());
+
+		return exsweepInstructionSpis.stream().findFirst().get();// createProxiedNotificationSendersAsSpringWillNotCreateProxyForThese(senders);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private List<ExSweepInstructionSpi> getExSweepInstructionSpiServices() {
+		List<ExSweepInstructionSpi> senders = new ArrayList<>();
+		try {
+			final ServiceListFactoryBean serviceListFactoryBean = new ServiceListFactoryBean();
+			serviceListFactoryBean.setServiceType(ExSweepInstructionSpi.class);
+			serviceListFactoryBean.afterPropertiesSet();
+
+			senders = (List<ExSweepInstructionSpi>) serviceListFactoryBean.getObject();
+		} catch (Exception ex) {
+			LOGGER.info("Unable to retrieve ExSweepInstructionSpi implementations : {} ", ex.getMessage());
+			ex.printStackTrace();
+		}
+
+		return senders;
+	}
+
+	
 
 }

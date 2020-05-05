@@ -21,6 +21,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellectdesign.igtb.lms.ExSweepStructureSpi;
+import com.intellectdesign.igtb.lms.entity.SweepInstruction;
 import com.intellectdesign.igtb.lms.entity.SweepStructure;
 import com.intellectdesign.igtb.lms.exception.DataNotFoundException;
 import com.intellectdesign.igtb.lms.rowmapper.SweepStructureRowMapper;
@@ -41,6 +42,9 @@ public class SweepStructureRepository {
 
 	@Autowired
 	private ExSweepStructureSpi exSweepStructureSpiService;
+
+	@Autowired
+	private SweepInstructionRepository sweepInstructionRepository;
 
 	public List<SweepStructure> findAll() throws Exception {
 
@@ -86,6 +90,8 @@ public class SweepStructureRepository {
 
 	public SweepStructure findById(final Long structureId) throws Exception {
 
+		LOGGER.info("=======> Started Find By Structure Id {} ", structureId);
+
 		final String finalQuery = "SELECT NBR_STRCID,COD_SUBPROD,COD_PRODUCT,DAT_STRCEFF,NBR_PRIORITY,NBR_INSTRUCTIONS,NBR_STRGRPID,FLG_STRTYPE,DAT_STRCSETUP,FLG_LOCK FROM OLM_STRUCTURE_HEADER WHERE NBR_STRCID = :structureId";
 
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
@@ -100,6 +106,7 @@ public class SweepStructureRepository {
 			throw new DataNotFoundException("Structure Id " + structureId + " not found");
 		}
 
+		LOGGER.info("=======> Started findById Extended SweepStructure ");
 		final Object extendedObject = exSweepStructureSpiService.findById(structureId, jdbcTemplate);
 
 		LOGGER.info("findById :: extendedObject : {} ", extendedObject);
@@ -109,7 +116,18 @@ public class SweepStructureRepository {
 			sweeepStructure.setExtObject(extendedObject);
 		}
 
-		LOGGER.info("findById :: SweepStructure : {} ", sweeepStructure);
+		LOGGER.info("=======> Ended findById Extended SweepStructure ");
+
+		LOGGER.info("=======> Started Instructions by structure Id ");
+		List<SweepInstruction> swpInstructions = sweepInstructionRepository.findByStructureId(structureId,
+				jdbcTemplate);
+		if (swpInstructions.size() > 0) {
+			sweeepStructure.setSweepInstructions(swpInstructions);
+		}
+
+		LOGGER.info("=======> Ended Instructions by structure Id ");
+
+		LOGGER.info("=======> Ended findById :: SweepStructure : {} ", sweeepStructure);
 		return sweeepStructure;
 
 	}
@@ -122,8 +140,6 @@ public class SweepStructureRepository {
 		TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
 
 		int val = 0;
-
-		LOGGER.info("connObj.getAutoCommit() : {} ", jdbcTemplate.getDataSource().getConnection().getAutoCommit());
 
 		LOGGER.info("============== Parent Object Save Start =========================");
 
@@ -148,11 +164,22 @@ public class SweepStructureRepository {
 
 				extendedObject = (int) exSweepStructureSpiService.save(sweepStructure.getExtObject(), jdbcTemplate);
 
-				LOGGER.info("extendedObject insert Reponse : " + extendedObject);
+				LOGGER.info("extendedObject insert Reponse : {}", extendedObject);
 			}
 
 			LOGGER.info("============== extended Object Save End =========================");
 
+			LOGGER.info("============== Instruction Save Start =========================");
+			if (sweepStructure.getSweepInstructions() != null) {
+
+				long rowCount =1;
+				for (final SweepInstruction sweepInstruction : sweepStructure.getSweepInstructions()) {
+					sweepInstruction.setInstructionId(rowCount);
+					sweepInstructionRepository.save(sweepInstruction, jdbcTemplate);
+					rowCount++;
+				}
+			}
+			LOGGER.info("============== Instruction Save End =========================");
 			transactionManager.commit(transactionStatus);
 			LOGGER.info("============== Parent Object Save end =========================");
 		} catch (Exception ex) {

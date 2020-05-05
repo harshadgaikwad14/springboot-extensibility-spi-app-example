@@ -2,8 +2,9 @@ package com.intellectdesign.igtb.lms.entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
-public class SweepStructure implements Serializable {
+public class SweepStructure extends ExtendedModel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Long structureId;
@@ -16,7 +17,8 @@ public class SweepStructure implements Serializable {
 	private String structureType;
 	private LocalDate setupDate;
 	private String lockFlag;
-	private Object extObject;
+	private List<SweepInstruction> sweepInstructions; 
+	//private Object extObject;
 
 	public SweepStructure() {
 		super();
@@ -103,12 +105,12 @@ public class SweepStructure implements Serializable {
 		this.lockFlag = lockFlag;
 	}
 
-	public Object getExtObject() {
-		return extObject;
+	public List<SweepInstruction> getSweepInstructions() {
+		return sweepInstructions;
 	}
 
-	public void setExtObject(Object extObject) {
-		this.extObject = extObject;
+	public void setSweepInstructions(List<SweepInstruction> sweepInstructions) {
+		this.sweepInstructions = sweepInstructions;
 	}
 
 	@Override
@@ -116,7 +118,29 @@ public class SweepStructure implements Serializable {
 		return "SweepStructure [structureId=" + structureId + ", subProductCode=" + subProductCode + ", productCode="
 				+ productCode + ", effDate=" + effDate + ", nbrPriority=" + nbrPriority + ", noOfInstructions="
 				+ noOfInstructions + ", nbrGroupId=" + nbrGroupId + ", structureType=" + structureType + ", setupDate="
-				+ setupDate + ", lockFlag=" + lockFlag + ", extObject=" + extObject + "]";
+				+ setupDate + ", lockFlag=" + lockFlag + ", sweepInstructions=" + sweepInstructions + "]";
 	}
 
+	
+
+//	public Object getExtObject() {
+//		return extObject;
+//	}
+//
+//	public void setExtObject(Object extObject) {
+//		this.extObject = extObject;
+//	}
+//
+//	@Override
+//	public String toString() {
+//		return "SweepStructure [structureId=" + structureId + ", subProductCode=" + subProductCode + ", productCode="
+//				+ productCode + ", effDate=" + effDate + ", nbrPriority=" + nbrPriority + ", noOfInstructions="
+//				+ noOfInstructions + ", nbrGroupId=" + nbrGroupId + ", structureType=" + structureType + ", setupDate="
+//				+ setupDate + ", lockFlag=" + lockFlag + ", extObject=" + extObject + "]";
+//	}
+	
+	
+
+	
+	
 }

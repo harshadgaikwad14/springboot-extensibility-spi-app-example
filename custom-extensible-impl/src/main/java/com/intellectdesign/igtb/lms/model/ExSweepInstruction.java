@@ -2,19 +2,28 @@ package com.intellectdesign.igtb.lms.model;
 
 import java.io.Serializable;
 
-public class ExSweepStructure implements Serializable {
+public class ExSweepInstruction implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Long structureId;
+	private Long instructionId;
 	private String extField1;
 	private String extField2;
 	private String extField3;
 
-	public ExSweepStructure() {
+	public ExSweepInstruction() {
 	}
 
 	public Long getStructureId() {
 		return structureId;
+	}
+
+	public Long getInstructionId() {
+		return instructionId;
+	}
+
+	public void setInstructionId(Long instructionId) {
+		this.instructionId = instructionId;
 	}
 
 	public void setStructureId(Long structureId) {

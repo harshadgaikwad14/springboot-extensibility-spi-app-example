@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import com.intellectdesign.igtb.lms.ExSweepStructureSpi;
+import com.intellectdesign.igtb.lms.entity.SweepInstruction;
 import com.intellectdesign.igtb.lms.entity.SweepStructure;
 import com.intellectdesign.igtb.lms.exception.ApiSubError;
 import com.intellectdesign.igtb.lms.exception.ApiValidationError;
@@ -25,19 +26,25 @@ public class SweepStructureValidation {
 	@Autowired
 	private ExSweepStructureSpi exSweepStructureSpiService;
 
+	@Autowired
+	private SweepInstructionValidation sweepInstructionValidation;
+
 	public List<ApiSubError> validate(final SweepStructure sweepStructure) throws Exception {
 
 		LOGGER.info("sweepStructure {} ", sweepStructure);
 
-		List<ApiSubError> extendedObjectErrorList = null;
 		List<ApiSubError> errorList = new ArrayList<>();
 
 		if (sweepStructure.getExtObject() != null) {
 
-			extendedObjectErrorList = exSweepStructureSpiService.validate(sweepStructure.getExtObject(), jdbcTemplate);
-		}
+			List<ApiSubError> extendedObjectErrorList = exSweepStructureSpiService
+					.validate(sweepStructure.getExtObject(), jdbcTemplate);
+			LOGGER.info("extendedObjectErrorList {} ", extendedObjectErrorList);
+			if (extendedObjectErrorList != null) {
+				errorList.addAll(extendedObjectErrorList);
+			}
 
-		LOGGER.info("extendedObjectErrorList {} ", extendedObjectErrorList);
+		}
 
 		if (sweepStructure.getStructureId() == null) {
 			final ApiSubError apiSubError1 = new ApiValidationError("SweepStructure", "structureId",
@@ -55,8 +62,13 @@ public class SweepStructureValidation {
 					"productCode should be SWEEPS");
 			errorList.add(apiSubError1);
 		}
-		if (extendedObjectErrorList != null) {
-			errorList.addAll(extendedObjectErrorList);
+
+		for (SweepInstruction swpInstr : sweepStructure.getSweepInstructions()) {
+
+			List<ApiSubError> swpInstructionErrorList = sweepInstructionValidation.validate(swpInstr, jdbcTemplate);
+			if (swpInstructionErrorList != null) {
+				errorList.addAll(swpInstructionErrorList);
+			}
 		}
 
 		LOGGER.info("final validation errorList {} ", errorList);
