@@ -1,4 +1,7 @@
 com\intellectdesign\igtb\lms\ExCommonSpiImpl.class
 com\intellectdesign\igtb\lms\ExSweepStructureSpiImpl.class
+com\intellectdesign\igtb\lms\model\ExSweepInstruction.class
+com\intellectdesign\igtb\lms\ExSweepInstructionSpiImpl.class
 com\intellectdesign\igtb\lms\model\ExSweepStructure.class
 com\intellectdesign\igtb\lms\rowmapper\ExSwpStructureRowMapper.class
+com\intellectdesign\igtb\lms\rowmapper\ExSwpInstructionRowMapper.class

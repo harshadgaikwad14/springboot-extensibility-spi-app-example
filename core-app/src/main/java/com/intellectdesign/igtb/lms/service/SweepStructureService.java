@@ -47,5 +47,21 @@ public class SweepStructureService {
 		throw new ValidationException(errorList);
 
 	}
+	
+	public String update(final SweepStructure sweepStructure) throws Exception {
+
+		LOGGER.info("SweepStructure : {} ", sweepStructure);
+
+		/*final List<ApiSubError> errorList = sweepStructureValidation.validate(sweepStructure);
+		if (errorList.isEmpty()) {*/
+
+			return sweepStructureRepository.update(sweepStructure);
+		/*
+		 * }
+		 * 
+		 * throw new ValidationException(errorList);
+		 */
+
+	}
 
 }

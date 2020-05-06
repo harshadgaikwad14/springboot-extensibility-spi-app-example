@@ -24,6 +24,7 @@ import com.intellectdesign.igtb.lms.ExSweepStructureSpi;
 import com.intellectdesign.igtb.lms.entity.SweepInstruction;
 import com.intellectdesign.igtb.lms.entity.SweepStructure;
 import com.intellectdesign.igtb.lms.exception.DataNotFoundException;
+import com.intellectdesign.igtb.lms.exception.PersistanceException;
 import com.intellectdesign.igtb.lms.rowmapper.SweepStructureRowMapper;
 
 @Repository
@@ -172,7 +173,7 @@ public class SweepStructureRepository {
 			LOGGER.info("============== Instruction Save Start =========================");
 			if (sweepStructure.getSweepInstructions() != null) {
 
-				long rowCount =1;
+				long rowCount = 1;
 				for (final SweepInstruction sweepInstruction : sweepStructure.getSweepInstructions()) {
 					sweepInstruction.setInstructionId(rowCount);
 					sweepInstructionRepository.save(sweepInstruction, jdbcTemplate);
@@ -187,6 +188,71 @@ public class SweepStructureRepository {
 			transactionManager.rollback(transactionStatus);
 
 			throw new ValidationException("Persistance Failed " + ex.getMessage());
+
+		}
+
+		if (val == 1) {
+			return "SUCCESS";
+		}
+
+		return "FAILED";
+	}
+
+	public String update(final SweepStructure sweepStructure) throws Exception {
+
+		LOGGER.info("sweepStructure : {} ", sweepStructure);
+
+		TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+		TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
+
+		int val = 0;
+
+		LOGGER.info("============== Parent Object Update Start =========================");
+
+		try {
+
+			val = jdbcTemplate
+					.update("UPDATE OLM_STRUCTURE_HEADER SET COD_SUBPROD = '" + sweepStructure.getSubProductCode()
+							+ "', COD_PRODUCT = '" + sweepStructure.getProductCode() + "', DAT_STRCEFF = TO_DATE('"
+							+ sweepStructure.getEffDate() + " 00:00:00' , 'YYYY-MM-DD HH24:MI:SS'),NBR_PRIORITY ="
+							+ sweepStructure.getNbrPriority() + ",NBR_INSTRUCTIONS="
+							+ sweepStructure.getNoOfInstructions() + ",NBR_STRGRPID=" + sweepStructure.getNbrGroupId()
+							+ ",FLG_STRTYPE='" + sweepStructure.getStructureType() + "',DAT_STRCSETUP=TO_DATE('"
+							+ sweepStructure.getSetupDate() + " 00:00:00' , 'YYYY-MM-DD HH24:MI:SS'),FLG_LOCK='"
+							+ sweepStructure.getLockFlag() + "' WHERE NBR_STRCID=" + sweepStructure.getStructureId());
+
+			LOGGER.info("val : {} ", val);
+
+			LOGGER.info("============== extended Object Update Start =========================");
+
+			if (sweepStructure.getExtObject() != null) {
+
+				int extendedObject = 0;
+
+				extendedObject = (int) exSweepStructureSpiService.update(sweepStructure.getExtObject(), jdbcTemplate);
+
+				LOGGER.info("extendedObject update Reponse : {}", extendedObject);
+			}
+
+			LOGGER.info("============== extended Object update End =========================");
+
+			LOGGER.info("============== Instruction update Start =========================");
+			if (sweepStructure.getSweepInstructions() != null) {
+
+				for (final SweepInstruction sweepInstruction : sweepStructure.getSweepInstructions()) {
+
+					sweepInstructionRepository.update(sweepInstruction, jdbcTemplate);
+
+				}
+			}
+			LOGGER.info("============== Instruction update End =========================");
+			transactionManager.commit(transactionStatus);
+			LOGGER.info("============== Parent Object update end =========================");
+		} catch (Exception ex) {
+			val = 0;
+			transactionManager.rollback(transactionStatus);
+
+			throw new PersistanceException(ex.getMessage());
 
 		}
 

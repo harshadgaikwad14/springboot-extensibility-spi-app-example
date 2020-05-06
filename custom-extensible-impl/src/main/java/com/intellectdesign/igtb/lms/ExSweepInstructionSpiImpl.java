@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellectdesign.igtb.lms.exception.ApiSubError;
 import com.intellectdesign.igtb.lms.exception.ApiValidationError;
 import com.intellectdesign.igtb.lms.model.ExSweepInstruction;
+import com.intellectdesign.igtb.lms.model.ExSweepStructure;
 import com.intellectdesign.igtb.lms.rowmapper.ExSwpInstructionRowMapper;
 
 public class ExSweepInstructionSpiImpl implements ExSweepInstructionSpi {
@@ -74,6 +75,28 @@ public class ExSweepInstructionSpiImpl implements ExSweepInstructionSpi {
 
 	}
 
+	@Override
+	public Object update(final Object object, final JdbcTemplate jdbcTemplate) throws Exception {
+
+		ExSweepInstruction exSwpInstr = null;
+		final ObjectMapper objectMapper = new ObjectMapper();
+
+		final String objectAsString = objectMapper.writeValueAsString(object);
+		System.out.println("ExSweepStructureSpiImpl - update : objectAsString :: " + objectAsString);
+		exSwpInstr = objectMapper.readValue(objectAsString, ExSweepInstruction.class);
+
+		int val = 0;
+
+		val = jdbcTemplate.update("UPDATE EX_OLM_SOURCE_ACCOUNT_DTLS SET FIELD1 = '" + exSwpInstr.getExtField1()
+				+ "', FIELD2 = '" + exSwpInstr.getExtField2() + "', FIELD3 = '" + exSwpInstr.getExtField3()
+				+ "' WHERE NBR_STRCID = " + exSwpInstr.getStructureId()+" and NBR_INSTRID = "+exSwpInstr.getInstructionId());
+
+		System.out.println(val + " records updated");
+
+		return val;
+
+	}
+	
 	@Override
 	public List<ApiSubError> validate(final Object input, final JdbcTemplate jdbcTemplate) throws Exception {
 

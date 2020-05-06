@@ -184,16 +184,58 @@ public class SweepInstructionRepository {
 			final ObjectMapper objectMapper = new ObjectMapper();
 			final JsonNode extendedObjectNode = objectMapper.convertValue(sweepInstruction.getExtObject(),
 					JsonNode.class);
-			LOGGER.info("============== extended Object Convert To Json Node : {} ",extendedObjectNode);
-			((ObjectNode)extendedObjectNode).put("instructionId", sweepInstruction.getInstructionId());
-			LOGGER.info("============== After extended Object Convert To Json Node : {} ",extendedObjectNode);
+			LOGGER.info("============== extended Object Convert To Json Node : {} ", extendedObjectNode);
+			((ObjectNode) extendedObjectNode).put("instructionId", sweepInstruction.getInstructionId());
+			LOGGER.info("============== After extended Object Convert To Json Node : {} ", extendedObjectNode);
 
-			extendedObject = (int) exSweepInstructionSpiService.save(objectMapper.convertValue(extendedObjectNode,Object.class), jdbcTemplate);
+			extendedObject = (int) exSweepInstructionSpiService
+					.save(objectMapper.convertValue(extendedObjectNode, Object.class), jdbcTemplate);
 
-			LOGGER.info("extendedObject insert Reponse : {} " , extendedObject);
+			LOGGER.info("extendedObject insert Reponse : {} ", extendedObject);
 		}
 
 		LOGGER.info("============== extended Object Save End =========================");
+
+		if (val == 1) {
+			return "SUCCESS";
+		}
+
+		return "FAILED";
+	}
+
+	public String update(final SweepInstruction sweepInstruction, final JdbcTemplate jdbcTemplate) throws Exception {
+
+		LOGGER.info("sweepInstruction : {} ", sweepInstruction);
+
+		int val = 0;
+
+		val = jdbcTemplate.update("UPDATE OLM_SOURCE_ACCOUNT_DTLS set COD_CIFSRCACCT="
+				+ sweepInstruction.getCifSrcAcctCode() + ", COD_CIFTGTACCT=" + sweepInstruction.getCifTgtAcctCode()
+				+ ",FLG_CTRAODLIMIT='" + sweepInstruction.getContraODLimitFag() + "',FLG_CTRLODLIMIT='"
+				+ sweepInstruction.getControlODLimitFag() + "',FLG_CROSSCCY='" + sweepInstruction.getCrossCcyFlag()
+				+ "',FLG_END='" + sweepInstruction.getEndFlag() + "',FLG_FORCEDR='" + sweepInstruction.getForceDrFlag()
+				+ "',COD_FREQUENCY=" + sweepInstruction.getFrequencyCode() + ",NBR_PRIORITY="
+				+ sweepInstruction.getNbrPriority() + ",NBR_SRCACCT=" + sweepInstruction.getNbrSrcAcct()
+				+ ",FLG_REVERSE='" + sweepInstruction.getReverseFlag() + "',FLG_SUSPEND='"
+				+ sweepInstruction.getSuspendFlag() + "',FLG_SWEEPTYP='" + sweepInstruction.getSweepTypeFlag()
+				+ "' WHERE NBR_STRCID = " + sweepInstruction.getStructureId() + " and NBR_INSTRID ="
+				+ sweepInstruction.getInstructionId());
+
+		LOGGER.info("val : {} ", val);
+
+		LOGGER.info("============== extended Object update Start =========================");
+
+		if (sweepInstruction.getExtObject() != null) {
+
+			int extendedObject = 0;
+
+			extendedObject = (int) exSweepInstructionSpiService
+					.update(sweepInstruction.getExtObject(), jdbcTemplate);
+
+			LOGGER.info("extendedObject update Reponse : {} ", extendedObject);
+		}
+
+		LOGGER.info("============== extended Object update End =========================");
 
 		if (val == 1) {
 			return "SUCCESS";

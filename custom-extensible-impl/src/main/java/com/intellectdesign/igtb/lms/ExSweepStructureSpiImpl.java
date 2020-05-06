@@ -66,9 +66,6 @@ public class ExSweepStructureSpiImpl implements ExSweepStructureSpi {
 		System.out.println("ExSweepStructureSpiImpl - findById : objectAsString :: " + objectAsString);
 		structureId = objectMapper.readValue(objectAsString, Long.class);
 
-//		final String finalQuery = "SELECT NBR_STRCID,FIELD1,FIELD2 FROM EX_OLM_STRUCTURE_HEADER WHERE NBR_STRCID = "
-//				+ structureId;
-
 		final String finalQuery = "SELECT NBR_STRCID,FIELD1,FIELD2,FIELD3 FROM EX_OLM_STRUCTURE_HEADER WHERE NBR_STRCID = "
 				+ structureId;
 
@@ -101,9 +98,8 @@ public class ExSweepStructureSpiImpl implements ExSweepStructureSpi {
 		if (exSwpStructure != null) {
 
 			errorList = new ArrayList<>();
-			
-			if(exSwpStructure.getStructureId()==null)
-			{
+
+			if (exSwpStructure.getStructureId() == null) {
 				final ApiSubError apiSubError1 = new ApiValidationError("ExSweepStructure", "structureId",
 						"Structure Id is mandatory");
 				errorList.add(apiSubError1);
@@ -113,6 +109,28 @@ public class ExSweepStructureSpiImpl implements ExSweepStructureSpi {
 		}
 
 		return errorList;
+	}
+
+	@Override
+	public Object update(final Object object, final JdbcTemplate jdbcTemplate) throws Exception {
+
+		ExSweepStructure exSwpStructure = null;
+		final ObjectMapper objectMapper = new ObjectMapper();
+
+		final String objectAsString = objectMapper.writeValueAsString(object);
+		System.out.println("ExSweepStructureSpiImpl - update : objectAsString :: " + objectAsString);
+		exSwpStructure = objectMapper.readValue(objectAsString, ExSweepStructure.class);
+
+		int val = 0;
+
+		val = jdbcTemplate.update("UPDATE EX_OLM_STRUCTURE_HEADER SET FIELD1 = '" + exSwpStructure.getExtField1()
+				+ "', FIELD2 = '" + exSwpStructure.getExtField2() + "', FIELD3 = '" + exSwpStructure.getExtField3()
+				+ "' WHERE NBR_STRCID = " + exSwpStructure.getStructureId());
+
+		System.out.println(val + " records updated");
+
+		return val;
+
 	}
 
 }

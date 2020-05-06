@@ -1,5 +1,6 @@
 package com.intellectdesign.igtb.lms.exception;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -24,8 +25,8 @@ public class LmsExceptionHandler extends ResponseEntityExceptionHandler {
 		LOGGER.info("Exception Handling for Payload Validation");
 
 		final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
-		apiError.setMessage("Validation Error");
-		apiError.setDebugMessage("Validation Failed");
+		apiError.setMessage("Validation Failure");
+		apiError.setDebugMessage("Entity Validation Failure");
 
 		final List<ApiSubError> subErrors = ex.getErrorList();
 		if (!subErrors.isEmpty()) {
@@ -42,7 +43,17 @@ public class LmsExceptionHandler extends ResponseEntityExceptionHandler {
 		apiError.setMessage(ex.getMessage());
 		return buildResponseEntity(apiError);
 	}
-
+	
+	
+	@ExceptionHandler(PersistanceException.class)
+	protected ResponseEntity<Object> handleEntityNotFound(PersistanceException ex) {
+		final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
+		apiError.setMessage("Persistence Failure");
+		apiError.setDebugMessage(ex.getMessage());
+		return buildResponseEntity(apiError);
+	}
+	
+	
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<Object> handleEntityNotFound(Exception ex) {
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
