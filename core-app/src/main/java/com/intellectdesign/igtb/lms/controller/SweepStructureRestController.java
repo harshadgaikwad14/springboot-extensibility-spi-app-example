@@ -2,6 +2,8 @@ package com.intellectdesign.igtb.lms.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.intellectdesign.igtb.lms.configuration.RequestInfo;
 import com.intellectdesign.igtb.lms.entity.SweepStructure;
 import com.intellectdesign.igtb.lms.service.SweepStructureService;
 
@@ -25,34 +28,37 @@ public class SweepStructureRestController {
 	@Autowired
 	private SweepStructureService sweepStructureService;
 
-	@GetMapping
-	public List<SweepStructure> getTaxTypes() throws Exception {
+	@Autowired
+	private RequestInfo requestInfo;
 
-		return sweepStructureService.findAll();
+	@GetMapping
+	public List<SweepStructure> getTaxTypes(final HttpServletRequest request) throws Exception {
+
+		return sweepStructureService.findAll(requestInfo.getRequestInfo(request));
 	}
 
 	@GetMapping("/{structureId}")
-	public SweepStructure getTaxTypes(@PathVariable(name = "structureId", required = true) Long structureId)
-			throws Exception {
+	public SweepStructure getTaxTypes(@PathVariable(name = "structureId", required = true) Long structureId,
+			final HttpServletRequest request) throws Exception {
 
-		return sweepStructureService.findById(structureId);
+		return sweepStructureService.findById(structureId, requestInfo.getRequestInfo(request));
 	}
 
 	@PostMapping
-	public String save(@RequestBody SweepStructure sweepStructure) throws Exception {
+	public String save(@RequestBody SweepStructure sweepStructure, final HttpServletRequest request) throws Exception {
 
 		LOGGER.info("sweepStructure : {} ", sweepStructure);
 
-		return sweepStructureService.save(sweepStructure);
+		return sweepStructureService.save(sweepStructure, requestInfo.getRequestInfo(request));
 	}
 
-	
 	@PutMapping("/{structureId}")
-	public String save(@RequestBody SweepStructure sweepStructure,@PathVariable("structureId") Long structureId) throws Exception {
+	public String save(@RequestBody SweepStructure sweepStructure, @PathVariable("structureId") Long structureId,
+			final HttpServletRequest request) throws Exception {
 
 		LOGGER.info("sweepStructure : {} ", sweepStructure);
 
-		return sweepStructureService.update(sweepStructure);
+		return sweepStructureService.update(sweepStructure, requestInfo.getRequestInfo(request));
 	}
 
 }

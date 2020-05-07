@@ -2,6 +2,7 @@ package com.intellectdesign.igtb.lms.validation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,46 +30,60 @@ public class SweepStructureValidation {
 	@Autowired
 	private SweepInstructionValidation sweepInstructionValidation;
 
-	public List<ApiSubError> validate(final SweepStructure sweepStructure) throws Exception {
+	public List<ApiSubError> validate(final SweepStructure sweepStructure, final Map<String, String> requestInfoMap)
+			throws Exception {
 
 		LOGGER.info("sweepStructure {} ", sweepStructure);
 
-		List<ApiSubError> errorList = new ArrayList<>();
+		final String requestMethod = requestInfoMap.get("method");
 
-		if (sweepStructure.getExtObject() != null) {
+		final List<ApiSubError> errorList = new ArrayList<>();
 
-			List<ApiSubError> extendedObjectErrorList = exSweepStructureSpiService
-					.validate(sweepStructure.getExtObject(), jdbcTemplate);
-			LOGGER.info("extendedObjectErrorList {} ", extendedObjectErrorList);
-			if (extendedObjectErrorList != null) {
-				errorList.addAll(extendedObjectErrorList);
+		if (requestMethod.equalsIgnoreCase("POST")) {
+			if (sweepStructure.getExtObject() != null) {
+
+				List<ApiSubError> extendedObjectErrorList = exSweepStructureSpiService
+						.validate(sweepStructure.getExtObject(), requestInfoMap, jdbcTemplate);
+				LOGGER.info("extendedObjectErrorList {} ", extendedObjectErrorList);
+				if (extendedObjectErrorList != null) {
+					errorList.addAll(extendedObjectErrorList);
+				}
+
 			}
 
-		}
+			if (sweepStructure.getStructureId() == null) {
+				final ApiSubError apiSubError1 = new ApiValidationError("SweepStructure", "structureId",
+						"Structure Id is mandatory");
+				errorList.add(apiSubError1);
 
-		if (sweepStructure.getStructureId() == null) {
-			final ApiSubError apiSubError1 = new ApiValidationError("SweepStructure", "structureId",
-					"Structure Id is mandatory");
-			errorList.add(apiSubError1);
-
-		}
-
-		if (sweepStructure.getProductCode() == null || sweepStructure.getProductCode().isEmpty()) {
-			final ApiSubError apiSubError1 = new ApiValidationError("SweepStructure", "productCode",
-					"productCode is mandatory");
-			errorList.add(apiSubError1);
-		} else if (!"SWEEPS".equals(sweepStructure.getProductCode())) {
-			final ApiSubError apiSubError1 = new ApiValidationError("SweepStructure", "productCode",
-					"productCode should be SWEEPS");
-			errorList.add(apiSubError1);
-		}
-
-		for (SweepInstruction swpInstr : sweepStructure.getSweepInstructions()) {
-
-			List<ApiSubError> swpInstructionErrorList = sweepInstructionValidation.validate(swpInstr, jdbcTemplate);
-			if (swpInstructionErrorList != null) {
-				errorList.addAll(swpInstructionErrorList);
 			}
+
+			if (sweepStructure.getProductCode() == null || sweepStructure.getProductCode().isEmpty()) {
+				final ApiSubError apiSubError1 = new ApiValidationError("SweepStructure", "productCode",
+						"productCode is mandatory");
+				errorList.add(apiSubError1);
+			} else if (!"SWEEPS".equals(sweepStructure.getProductCode())) {
+				final ApiSubError apiSubError1 = new ApiValidationError("SweepStructure", "productCode",
+						"productCode should be SWEEPS");
+				errorList.add(apiSubError1);
+			}
+
+			if (sweepStructure.getSweepInstructions() == null) {
+				final ApiSubError apiSubError = new ApiValidationError("SweepStructure", "sweepInstructions",
+						"Instruction should not be empty");
+				errorList.add(apiSubError);
+			} else {
+
+				for (SweepInstruction swpInstr : sweepStructure.getSweepInstructions()) {
+
+					final List<ApiSubError> swpInstructionErrorList = sweepInstructionValidation.validate(swpInstr,
+							requestInfoMap, jdbcTemplate);
+					if (swpInstructionErrorList != null) {
+						errorList.addAll(swpInstructionErrorList);
+					}
+				}
+			}
+
 		}
 
 		LOGGER.info("final validation errorList {} ", errorList);

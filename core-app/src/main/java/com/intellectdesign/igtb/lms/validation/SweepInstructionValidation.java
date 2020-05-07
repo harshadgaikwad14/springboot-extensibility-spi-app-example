@@ -2,6 +2,7 @@ package com.intellectdesign.igtb.lms.validation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +21,10 @@ public class SweepInstructionValidation {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SweepInstructionValidation.class);
 
 	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@Autowired
 	private ExSweepInstructionSpi exSweepInstructionSpiService;
 
-	public List<ApiSubError> validate(final SweepInstruction sweepInstruction,final JdbcTemplate jdbcTemplate) throws Exception {
+	public List<ApiSubError> validate(final SweepInstruction sweepInstruction, final Map<String, String> requestInfoMap,
+			final JdbcTemplate jdbcTemplate) throws Exception {
 
 		LOGGER.info("sweepInstruction {} ", sweepInstruction);
 
@@ -35,8 +34,9 @@ public class SweepInstructionValidation {
 		if (sweepInstruction.getExtObject() != null) {
 
 			extendedObjectErrorList = exSweepInstructionSpiService.validate(sweepInstruction.getExtObject(),
-					jdbcTemplate);
+					requestInfoMap, jdbcTemplate);
 		}
+		
 
 		LOGGER.info("extendedObjectErrorList {} ", extendedObjectErrorList);
 

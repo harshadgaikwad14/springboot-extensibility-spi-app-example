@@ -2,6 +2,7 @@ package com.intellectdesign.igtb.lms.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,8 @@ public class SweepInstructionRepository {
 	@Autowired
 	private ExSweepInstructionSpi exSweepInstructionSpiService;
 
-	public List<SweepInstruction> findAll(final JdbcTemplate jdbcTemplate) throws Exception {
+	public List<SweepInstruction> findAll(final Map<String, String> requestInfoMap, final JdbcTemplate jdbcTemplate)
+			throws Exception {
 
 		Object extendedObject = null;
 		JsonNode extendedObjectNode = null;
@@ -41,7 +43,7 @@ public class SweepInstructionRepository {
 		final List<SweepInstruction> listOfInstructions = jdbcTemplate.query(finalQuery,
 				new SweepInstructionRowMapper());
 
-		extendedObject = exSweepInstructionSpiService.findAll(null, jdbcTemplate);
+		extendedObject = exSweepInstructionSpiService.findAll(null, requestInfoMap, jdbcTemplate);
 
 		LOGGER.info("extendedObject : {}", extendedObject);
 
@@ -76,8 +78,8 @@ public class SweepInstructionRepository {
 		return swpInstructions;
 	}
 
-	public List<SweepInstruction> findByStructureId(final Long structureId, final JdbcTemplate jdbcTemplate)
-			throws Exception {
+	public List<SweepInstruction> findByStructureId(final Long structureId, final Map<String, String> requestInfoMap,
+			final JdbcTemplate jdbcTemplate) throws Exception {
 
 		LOGGER.info("=======> Started Instructions by structure Id : {} ", structureId);
 
@@ -98,7 +100,8 @@ public class SweepInstructionRepository {
 			throw new DataNotFoundException("Structure Id " + structureId + " not found");
 		}
 
-		final Object extendedObject = exSweepInstructionSpiService.findByStructureId(structureId, jdbcTemplate);
+		final Object extendedObject = exSweepInstructionSpiService.findByStructureId(structureId, requestInfoMap,
+				jdbcTemplate);
 
 		LOGGER.info("findById :: extendedObject : {} ", extendedObject);
 
@@ -134,7 +137,8 @@ public class SweepInstructionRepository {
 
 	}
 
-	public SweepInstruction findById(final Long structureId, final Long instructionId) throws Exception {
+	public SweepInstruction findById(final Long structureId, final Long instructionId,
+			final Map<String, String> requestInfoMap) throws Exception {
 
 		final String finalQuery = "SELECT NBR_STRCID,NBR_INSTRID,COD_CIFSRCACCT,COD_CIFTGTACCT,FLG_CTRAODLIMIT,FLG_CTRLODLIMIT,FLG_CROSSCCY,FLG_END,FLG_FORCEDR,COD_FREQUENCY,NBR_PRIORITY,NBR_SRCACCT,FLG_REVERSE,FLG_SUSPEND,FLG_SWEEPTYP FROM OLM_SOURCE_ACCOUNT_DTLS WHERE NBR_STRCID = :structureId and NBR_INSTRID = : instructionId";
 
@@ -156,7 +160,8 @@ public class SweepInstructionRepository {
 
 	}
 
-	public String save(final SweepInstruction sweepInstruction, final JdbcTemplate jdbcTemplate) throws Exception {
+	public String save(final SweepInstruction sweepInstruction, final Map<String, String> requestInfoMap,
+			final JdbcTemplate jdbcTemplate) throws Exception {
 
 		LOGGER.info("sweepInstruction : {} ", sweepInstruction);
 
@@ -189,7 +194,7 @@ public class SweepInstructionRepository {
 			LOGGER.info("============== After extended Object Convert To Json Node : {} ", extendedObjectNode);
 
 			extendedObject = (int) exSweepInstructionSpiService
-					.save(objectMapper.convertValue(extendedObjectNode, Object.class), jdbcTemplate);
+					.save(objectMapper.convertValue(extendedObjectNode, Object.class), requestInfoMap, jdbcTemplate);
 
 			LOGGER.info("extendedObject insert Reponse : {} ", extendedObject);
 		}
@@ -203,7 +208,8 @@ public class SweepInstructionRepository {
 		return "FAILED";
 	}
 
-	public String update(final SweepInstruction sweepInstruction, final JdbcTemplate jdbcTemplate) throws Exception {
+	public String update(final SweepInstruction sweepInstruction, final Map<String, String> requestInfoMap,
+			final JdbcTemplate jdbcTemplate) throws Exception {
 
 		LOGGER.info("sweepInstruction : {} ", sweepInstruction);
 
@@ -229,8 +235,8 @@ public class SweepInstructionRepository {
 
 			int extendedObject = 0;
 
-			extendedObject = (int) exSweepInstructionSpiService
-					.update(sweepInstruction.getExtObject(), jdbcTemplate);
+			extendedObject = (int) exSweepInstructionSpiService.update(sweepInstruction.getExtObject(), requestInfoMap,
+					jdbcTemplate);
 
 			LOGGER.info("extendedObject update Reponse : {} ", extendedObject);
 		}

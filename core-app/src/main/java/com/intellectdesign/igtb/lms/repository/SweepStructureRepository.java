@@ -2,8 +2,7 @@ package com.intellectdesign.igtb.lms.repository;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.validation.ValidationException;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +46,7 @@ public class SweepStructureRepository {
 	@Autowired
 	private SweepInstructionRepository sweepInstructionRepository;
 
-	public List<SweepStructure> findAll() throws Exception {
+	public List<SweepStructure> findAll(final Map<String, String> requestInfoMap) throws Exception {
 
 		Object extendedObject = null;
 		JsonNode extendedObjectNode = null;
@@ -56,7 +55,7 @@ public class SweepStructureRepository {
 		final String finalQuery = "SELECT NBR_STRCID,COD_SUBPROD,COD_PRODUCT,DAT_STRCEFF,NBR_PRIORITY,NBR_INSTRUCTIONS,NBR_STRGRPID,FLG_STRTYPE,DAT_STRCSETUP,FLG_LOCK FROM OLM_STRUCTURE_HEADER";
 		final List<SweepStructure> listOfStructures = jdbcTemplate.query(finalQuery, new SweepStructureRowMapper());
 
-		extendedObject = exSweepStructureSpiService.findAll(null, jdbcTemplate);
+		extendedObject = exSweepStructureSpiService.findAll(null, requestInfoMap, jdbcTemplate);
 
 		LOGGER.info("extendedObject : {}", extendedObject);
 
@@ -89,7 +88,7 @@ public class SweepStructureRepository {
 		return swpStructures;
 	}
 
-	public SweepStructure findById(final Long structureId) throws Exception {
+	public SweepStructure findById(final Long structureId, final Map<String, String> requestInfoMap) throws Exception {
 
 		LOGGER.info("=======> Started Find By Structure Id {} ", structureId);
 
@@ -108,7 +107,7 @@ public class SweepStructureRepository {
 		}
 
 		LOGGER.info("=======> Started findById Extended SweepStructure ");
-		final Object extendedObject = exSweepStructureSpiService.findById(structureId, jdbcTemplate);
+		final Object extendedObject = exSweepStructureSpiService.findById(structureId, requestInfoMap, jdbcTemplate);
 
 		LOGGER.info("findById :: extendedObject : {} ", extendedObject);
 
@@ -121,7 +120,7 @@ public class SweepStructureRepository {
 
 		LOGGER.info("=======> Started Instructions by structure Id ");
 		List<SweepInstruction> swpInstructions = sweepInstructionRepository.findByStructureId(structureId,
-				jdbcTemplate);
+				requestInfoMap, jdbcTemplate);
 		if (swpInstructions.size() > 0) {
 			sweeepStructure.setSweepInstructions(swpInstructions);
 		}
@@ -133,7 +132,7 @@ public class SweepStructureRepository {
 
 	}
 
-	public String save(final SweepStructure sweepStructure) throws Exception {
+	public String save(final SweepStructure sweepStructure, final Map<String, String> requestInfoMap) throws Exception {
 
 		LOGGER.info("sweepStructure : {} ", sweepStructure);
 
@@ -163,7 +162,8 @@ public class SweepStructureRepository {
 
 				int extendedObject = 0;
 
-				extendedObject = (int) exSweepStructureSpiService.save(sweepStructure.getExtObject(), jdbcTemplate);
+				extendedObject = (int) exSweepStructureSpiService.save(sweepStructure.getExtObject(), requestInfoMap,
+						jdbcTemplate);
 
 				LOGGER.info("extendedObject insert Reponse : {}", extendedObject);
 			}
@@ -176,7 +176,7 @@ public class SweepStructureRepository {
 				long rowCount = 1;
 				for (final SweepInstruction sweepInstruction : sweepStructure.getSweepInstructions()) {
 					sweepInstruction.setInstructionId(rowCount);
-					sweepInstructionRepository.save(sweepInstruction, jdbcTemplate);
+					sweepInstructionRepository.save(sweepInstruction, requestInfoMap, jdbcTemplate);
 					rowCount++;
 				}
 			}
@@ -187,7 +187,7 @@ public class SweepStructureRepository {
 			val = 0;
 			transactionManager.rollback(transactionStatus);
 
-			throw new ValidationException("Persistance Failed " + ex.getMessage());
+			throw new PersistanceException(ex.getMessage());
 
 		}
 
@@ -198,7 +198,8 @@ public class SweepStructureRepository {
 		return "FAILED";
 	}
 
-	public String update(final SweepStructure sweepStructure) throws Exception {
+	public String update(final SweepStructure sweepStructure, final Map<String, String> requestInfoMap)
+			throws Exception {
 
 		LOGGER.info("sweepStructure : {} ", sweepStructure);
 
@@ -229,7 +230,8 @@ public class SweepStructureRepository {
 
 				int extendedObject = 0;
 
-				extendedObject = (int) exSweepStructureSpiService.update(sweepStructure.getExtObject(), jdbcTemplate);
+				extendedObject = (int) exSweepStructureSpiService.update(sweepStructure.getExtObject(), requestInfoMap,
+						jdbcTemplate);
 
 				LOGGER.info("extendedObject update Reponse : {}", extendedObject);
 			}
@@ -241,7 +243,7 @@ public class SweepStructureRepository {
 
 				for (final SweepInstruction sweepInstruction : sweepStructure.getSweepInstructions()) {
 
-					sweepInstructionRepository.update(sweepInstruction, jdbcTemplate);
+					sweepInstructionRepository.update(sweepInstruction, requestInfoMap, jdbcTemplate);
 
 				}
 			}

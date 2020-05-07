@@ -1,6 +1,7 @@
 package com.intellectdesign.igtb.lms.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,38 +25,41 @@ public class SweepStructureService {
 	@Autowired
 	private SweepStructureValidation sweepStructureValidation;
 
-	public List<SweepStructure> findAll() throws Exception {
+	public List<SweepStructure> findAll(final Map<String, String> requestInfoMap) throws Exception {
 		LOGGER.info("Sweep Strucure Service Called");
-		return sweepStructureRepository.findAll();
+		return sweepStructureRepository.findAll(requestInfoMap);
 	}
 
-	public SweepStructure findById(Long structureId) throws Exception {
+	public SweepStructure findById(Long structureId, final Map<String, String> requestInfoMap) throws Exception {
 		LOGGER.info("Sweep Strucure Service findById Called");
-		return sweepStructureRepository.findById(structureId);
+		return sweepStructureRepository.findById(structureId, requestInfoMap);
 	}
 
-	public String save(final SweepStructure sweepStructure) throws Exception {
+	public String save(final SweepStructure sweepStructure, final Map<String, String> requestInfoMap) throws Exception {
 
 		LOGGER.info("SweepStructure : {} ", sweepStructure);
 
-		final List<ApiSubError> errorList = sweepStructureValidation.validate(sweepStructure);
+		final List<ApiSubError> errorList = sweepStructureValidation.validate(sweepStructure, requestInfoMap);
 		if (errorList.isEmpty()) {
 
-			return sweepStructureRepository.save(sweepStructure);
+			return sweepStructureRepository.save(sweepStructure, requestInfoMap);
 		}
 
 		throw new ValidationException(errorList);
 
 	}
-	
-	public String update(final SweepStructure sweepStructure) throws Exception {
+
+	public String update(final SweepStructure sweepStructure, final Map<String, String> requestInfoMap)
+			throws Exception {
 
 		LOGGER.info("SweepStructure : {} ", sweepStructure);
 
-		/*final List<ApiSubError> errorList = sweepStructureValidation.validate(sweepStructure);
-		if (errorList.isEmpty()) {*/
+		/*
+		 * final List<ApiSubError> errorList =
+		 * sweepStructureValidation.validate(sweepStructure); if (errorList.isEmpty()) {
+		 */
 
-			return sweepStructureRepository.update(sweepStructure);
+		return sweepStructureRepository.update(sweepStructure, requestInfoMap);
 		/*
 		 * }
 		 * 

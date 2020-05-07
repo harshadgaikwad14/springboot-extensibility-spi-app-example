@@ -2,6 +2,7 @@ package com.intellectdesign.igtb.lms;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,10 +17,12 @@ public class ExSweepStructureSpiImpl implements ExSweepStructureSpi {
 
 	public ExSweepStructureSpiImpl() {
 		super();
+		System.out.println("====> VERSION : 0.0.1-SNAPSHOT <====");
+		//System.out.println("====> VERSION : 0.0.2-SNAPSHOT <====");
 	}
 
 	@Override
-	public Object findAll(final Object object, final JdbcTemplate jdbcTemplate) throws Exception {
+	public Object findAll(final Object object,final Map<String, String> requestInfoMap, final JdbcTemplate jdbcTemplate) throws Exception {
 
 		System.out.println("ExSweepStructureSpiImpl - findAll");
 		// final String finalQuery = "SELECT NBR_STRCID,FIELD1,FIELD2 FROM
@@ -31,7 +34,7 @@ public class ExSweepStructureSpiImpl implements ExSweepStructureSpi {
 	}
 
 	@Override
-	public Object save(final Object object, final JdbcTemplate jdbcTemplate) throws Exception {
+	public Object save(final Object object,final Map<String, String> requestInfoMap, final JdbcTemplate jdbcTemplate) throws Exception {
 
 		ExSweepStructure exSwpStructure = null;
 		final ObjectMapper objectMapper = new ObjectMapper();
@@ -57,7 +60,7 @@ public class ExSweepStructureSpiImpl implements ExSweepStructureSpi {
 	}
 
 	@Override
-	public Object findById(final Object object, final JdbcTemplate jdbcTemplate) throws Exception {
+	public Object findById(final Object object,final Map<String, String> requestInfoMap, final JdbcTemplate jdbcTemplate) throws Exception {
 
 		final ObjectMapper objectMapper = new ObjectMapper();
 		Long structureId = null;
@@ -85,7 +88,7 @@ public class ExSweepStructureSpiImpl implements ExSweepStructureSpi {
 	}
 
 	@Override
-	public List<ApiSubError> validate(final Object input, final JdbcTemplate jdbcTemplate) throws Exception {
+	public List<ApiSubError> validate(final Object input,final Map<String, String> requestInfoMap, final JdbcTemplate jdbcTemplate) throws Exception {
 
 		ExSweepStructure exSwpStructure = null;
 		final ObjectMapper objectMapper = new ObjectMapper();
@@ -112,7 +115,7 @@ public class ExSweepStructureSpiImpl implements ExSweepStructureSpi {
 	}
 
 	@Override
-	public Object update(final Object object, final JdbcTemplate jdbcTemplate) throws Exception {
+	public Object update(final Object object,final Map<String, String> requestInfoMap, final JdbcTemplate jdbcTemplate) throws Exception {
 
 		ExSweepStructure exSwpStructure = null;
 		final ObjectMapper objectMapper = new ObjectMapper();
