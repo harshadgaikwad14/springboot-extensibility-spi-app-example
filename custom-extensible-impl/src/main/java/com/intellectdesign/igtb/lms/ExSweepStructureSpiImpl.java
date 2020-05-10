@@ -8,10 +8,10 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.intellectdesign.igtb.lms.cz.entity.ExSweepStructure;
+import com.intellectdesign.igtb.lms.cz.rowmapper.ExSwpStructureRowMapper;
 import com.intellectdesign.igtb.lms.exception.ApiSubError;
 import com.intellectdesign.igtb.lms.exception.ApiValidationError;
-import com.intellectdesign.igtb.lms.model.ExSweepStructure;
-import com.intellectdesign.igtb.lms.rowmapper.ExSwpStructureRowMapper;
 
 public class ExSweepStructureSpiImpl implements ExSweepStructureSpi {
 

@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 import com.intellectdesign.igtb.lms.ExCommonSpi;
 import com.intellectdesign.igtb.lms.ExSweepInstructionSpi;
 import com.intellectdesign.igtb.lms.ExSweepStructureSpi;
+import com.intellectdesign.igtb.lms.cz.test.CzTestRepository;
+import com.intellectdesign.igtb.lms.cz.test.CzTestService;
 
 @Configuration
 public class ServiceLoaderConfig {
@@ -46,6 +48,36 @@ public class ServiceLoaderConfig {
 		return senders;
 	}
 
+	/*
+	 * @Bean public ExTestService<Object> exTestService() {
+	 * LOGGER.info("Crating proxy for ExTestService implementations");
+	 * 
+	 * final List<ExTestService> exTestRepositories = getExTestServices();
+	 * LOGGER.info("Found ExTestService implementations : {} ",
+	 * exTestRepositories.size());
+	 * 
+	 * for (final ExTestService exTestService : exTestRepositories) {
+	 * 
+	 * LOGGER.info("List Of object : {} ", exTestService.getClass().getName()); }
+	 * 
+	 * return exTestRepositories.stream().findFirst().get(); //
+	 * createProxiedNotificationSendersAsSpringWillNotCreateProxyForThese(senders);
+	 * }
+	 * 
+	 * @SuppressWarnings("unchecked") private List<ExTestService>
+	 * getExTestServices() { List<ExTestService> senders = new ArrayList<>(); try {
+	 * final ServiceListFactoryBean serviceListFactoryBean = new
+	 * ServiceListFactoryBean();
+	 * serviceListFactoryBean.setServiceType(ExTestService.class);
+	 * serviceListFactoryBean.afterPropertiesSet();
+	 * 
+	 * senders = (List<ExTestService>) serviceListFactoryBean.getObject(); } catch
+	 * (Exception ex) {
+	 * LOGGER.info("Unable to retrieve ExTestService implementations : {} ",
+	 * ex.getMessage()); ex.printStackTrace(); }
+	 * 
+	 * return senders; }
+	 */
 	@Bean
 	public ExSweepStructureSpi exSweepStructureSpiService() {
 		LOGGER.info("Crating proxy for ExSweepStructureSpi implementations");
@@ -73,7 +105,6 @@ public class ServiceLoaderConfig {
 		return senders;
 	}
 
-	
 	@Bean
 	public ExSweepInstructionSpi exSweepInstructionSpiService() {
 		LOGGER.info("Crating proxy for ExSweepInstructionSpi implementations");
@@ -83,7 +114,7 @@ public class ServiceLoaderConfig {
 
 		return exsweepInstructionSpis.stream().findFirst().get();// createProxiedNotificationSendersAsSpringWillNotCreateProxyForThese(senders);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private List<ExSweepInstructionSpi> getExSweepInstructionSpiServices() {
 		List<ExSweepInstructionSpi> senders = new ArrayList<>();
@@ -100,7 +131,5 @@ public class ServiceLoaderConfig {
 
 		return senders;
 	}
-
-	
 
 }

@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
-public interface ExSweepInstructionSpi extends EntityRepository {
+public interface ExSweepInstructionSpi extends CrudRepository {
 	
 	default Object findByStructureId(final Long structureId,final Map<String, String> requestInfoMap, final JdbcTemplate jdbcTemplate) throws Exception {
 		return null;
