@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.intellectdesign.igtb.lms.cz.entity.ExSweepStructure;
+import com.intellectdesign.igtb.lms.cz.entity.CzSweepStructure;
 
 public class CzSwpStructureServiceImpl implements CzSwpStructureService<Object> {
 
@@ -31,12 +31,12 @@ public class CzSwpStructureServiceImpl implements CzSwpStructureService<Object> 
 	public int save(final Object object, final Map<String, String> requestInfoMap, final JdbcTemplate jdbcTemplate)
 			throws Exception {
 
-		ExSweepStructure exSwpStructure = null;
+		CzSweepStructure exSwpStructure = null;
 		final ObjectMapper objectMapper = new ObjectMapper();
 
 		final String objectAsString = objectMapper.writeValueAsString(object);
 		System.out.println("ExSweepStructureSpiImpl - save : objectAsString :: " + objectAsString);
-		exSwpStructure = objectMapper.readValue(objectAsString, ExSweepStructure.class);
+		exSwpStructure = objectMapper.readValue(objectAsString, CzSweepStructure.class);
 
 		return exSwpStructureRepositoryImpl.save(exSwpStructure, requestInfoMap, jdbcTemplate);
 
@@ -61,12 +61,12 @@ public class CzSwpStructureServiceImpl implements CzSwpStructureService<Object> 
 	public int update(final Object object, final Map<String, String> requestInfoMap, final JdbcTemplate jdbcTemplate)
 			throws Exception {
 
-		ExSweepStructure exSwpStructure = null;
+		CzSweepStructure exSwpStructure = null;
 		final ObjectMapper objectMapper = new ObjectMapper();
 
 		final String objectAsString = objectMapper.writeValueAsString(object);
 		System.out.println("ExSweepStructureSpiImpl - update : objectAsString :: " + objectAsString);
-		exSwpStructure = objectMapper.readValue(objectAsString, ExSweepStructure.class);
+		exSwpStructure = objectMapper.readValue(objectAsString, CzSweepStructure.class);
 
 		return exSwpStructureRepositoryImpl.update(exSwpStructure, requestInfoMap, jdbcTemplate);
 

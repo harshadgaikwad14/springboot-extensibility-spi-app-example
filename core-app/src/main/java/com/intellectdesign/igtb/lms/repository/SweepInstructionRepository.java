@@ -12,16 +12,18 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.context.annotation.RequestScope;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.intellectdesign.igtb.lms.ExSweepInstructionSpi;
+import com.intellectdesign.igtb.lms.cz.swp.instruction.CzSwpInstructionService;
 import com.intellectdesign.igtb.lms.entity.SweepInstruction;
 import com.intellectdesign.igtb.lms.exception.DataNotFoundException;
 import com.intellectdesign.igtb.lms.rowmapper.SweepInstructionRowMapper;
 
 @Repository
+@RequestScope
 public class SweepInstructionRepository {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SweepInstructionRepository.class);
@@ -30,7 +32,10 @@ public class SweepInstructionRepository {
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Autowired
-	private ExSweepInstructionSpi exSweepInstructionSpiService;
+	private CzSwpInstructionService<Object> czSwpInstructionService;
+
+	@Autowired
+	private SweepInstructionRowMapper sweepInstructionRowMapper;
 
 	public List<SweepInstruction> findAll(final Map<String, String> requestInfoMap, final JdbcTemplate jdbcTemplate)
 			throws Exception {
@@ -40,10 +45,12 @@ public class SweepInstructionRepository {
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		final String finalQuery = "SELECT NBR_STRCID,NBR_INSTRID,COD_CIFSRCACCT,COD_CIFTGTACCT,FLG_CTRAODLIMIT,FLG_CTRLODLIMIT,FLG_CROSSCCY,FLG_END,FLG_FORCEDR,COD_FREQUENCY,NBR_PRIORITY,NBR_SRCACCT,FLG_REVERSE,FLG_SUSPEND,FLG_SWEEPTYP FROM OLM_SOURCE_ACCOUNT_DTLS;";
-		final List<SweepInstruction> listOfInstructions = jdbcTemplate.query(finalQuery,
-				new SweepInstructionRowMapper());
+		final List<SweepInstruction> listOfInstructions = jdbcTemplate.query(finalQuery, sweepInstructionRowMapper);
 
-		extendedObject = exSweepInstructionSpiService.findAll(null, requestInfoMap, jdbcTemplate);
+		if (czSwpInstructionService != null) {
+
+			extendedObject = czSwpInstructionService.findAll(null, requestInfoMap, jdbcTemplate);
+		}
 
 		LOGGER.info("extendedObject : {}", extendedObject);
 
@@ -94,16 +101,20 @@ public class SweepInstructionRepository {
 		JsonNode extendedObjectNode = null;
 		try {
 			sweeepInstructions = namedParameterJdbcTemplate.query(finalQuery, mapSqlParameterSource,
-					new SweepInstructionRowMapper());
+					sweepInstructionRowMapper);
 
 		} catch (EmptyResultDataAccessException e) {
 			throw new DataNotFoundException("Structure Id " + structureId + " not found");
 		}
 
-		final Object extendedObject = exSweepInstructionSpiService.findByStructureId(structureId, requestInfoMap,
-				jdbcTemplate);
-
-		LOGGER.info("findById :: extendedObject : {} ", extendedObject);
+		Object extendedObject = null;
+		if (czSwpInstructionService != null) {
+			LOGGER.info("start calling czSwpInstructionService forv findById ");
+			// extendedObject = exSweepInstructionSpiService.findByStructureId(structureId,
+			// requestInfoMap, jdbcTemplate);
+			extendedObject = czSwpInstructionService.findByStructureId(structureId, requestInfoMap, jdbcTemplate);
+			LOGGER.info("findById :: extendedObject : {} ", extendedObject);
+		}
 
 		if (extendedObject != null) {
 
@@ -149,7 +160,7 @@ public class SweepInstructionRepository {
 		SweepInstruction sweeepInstruction = null;
 		try {
 			sweeepInstruction = namedParameterJdbcTemplate.queryForObject(finalQuery, mapSqlParameterSource,
-					new SweepInstructionRowMapper());
+					sweepInstructionRowMapper);
 
 		} catch (EmptyResultDataAccessException e) {
 			throw new DataNotFoundException("Structure Id " + structureId + " not found");
@@ -193,8 +204,18 @@ public class SweepInstructionRepository {
 			((ObjectNode) extendedObjectNode).put("instructionId", sweepInstruction.getInstructionId());
 			LOGGER.info("============== After extended Object Convert To Json Node : {} ", extendedObjectNode);
 
-			extendedObject = (int) exSweepInstructionSpiService
-					.save(objectMapper.convertValue(extendedObjectNode, Object.class), requestInfoMap, jdbcTemplate);
+			if (czSwpInstructionService != null) {
+				LOGGER.info("start calling czSwpInstructionService save");
+				/*
+				 * extendedObject = (int) exSweepInstructionSpiService
+				 * .save(objectMapper.convertValue(extendedObjectNode, Object.class),
+				 * requestInfoMap, jdbcTemplate);
+				 */
+
+				extendedObject = (int) czSwpInstructionService.save(
+						objectMapper.convertValue(extendedObjectNode, Object.class), requestInfoMap, jdbcTemplate);
+				LOGGER.info("end calling czSwpInstructionService save");
+			}
 
 			LOGGER.info("extendedObject insert Reponse : {} ", extendedObject);
 		}
@@ -235,8 +256,18 @@ public class SweepInstructionRepository {
 
 			int extendedObject = 0;
 
-			extendedObject = (int) exSweepInstructionSpiService.update(sweepInstruction.getExtObject(), requestInfoMap,
-					jdbcTemplate);
+			if (czSwpInstructionService != null) {
+				LOGGER.info("start calling czSwpInstructionService update");
+				/*
+				 * extendedObject = (int)
+				 * exSweepInstructionSpiService.update(sweepInstruction.getExtObject(),
+				 * requestInfoMap, jdbcTemplate);
+				 */
+
+				extendedObject = (int) czSwpInstructionService.update(sweepInstruction.getExtObject(), requestInfoMap,
+						jdbcTemplate);
+				LOGGER.info("end calling czSwpInstructionService update");
+			}
 
 			LOGGER.info("extendedObject update Reponse : {} ", extendedObject);
 		}

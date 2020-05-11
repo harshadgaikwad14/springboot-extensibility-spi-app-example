@@ -4,9 +4,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 
 import com.intellectdesign.igtb.lms.entity.SweepInstruction;
 
+@Component
+@RequestScope
 public class SweepInstructionRowMapper implements RowMapper<SweepInstruction> {
 
 	public SweepInstruction mapRow(ResultSet rs, int rowNum) throws SQLException {

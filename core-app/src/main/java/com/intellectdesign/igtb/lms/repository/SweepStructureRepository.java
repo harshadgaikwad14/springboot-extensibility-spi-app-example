@@ -16,10 +16,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.web.context.annotation.RequestScope;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.intellectdesign.igtb.lms.ExSweepStructureSpi;
+import com.intellectdesign.igtb.lms.cz.swp.structure.CzSwpStructureService;
 import com.intellectdesign.igtb.lms.entity.SweepInstruction;
 import com.intellectdesign.igtb.lms.entity.SweepStructure;
 import com.intellectdesign.igtb.lms.exception.DataNotFoundException;
@@ -27,6 +28,7 @@ import com.intellectdesign.igtb.lms.exception.PersistanceException;
 import com.intellectdesign.igtb.lms.rowmapper.SweepStructureRowMapper;
 
 @Repository
+@RequestScope
 public class SweepStructureRepository {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SweepStructureRepository.class);
@@ -41,21 +43,30 @@ public class SweepStructureRepository {
 	PlatformTransactionManager transactionManager;
 
 	@Autowired
-	private ExSweepStructureSpi exSweepStructureSpiService;
-
-	@Autowired
 	private SweepInstructionRepository sweepInstructionRepository;
 
+	@Autowired
+	private CzSwpStructureService<Object> czSwpStructureService;
+
+	@Autowired
+	private SweepStructureRowMapper sweepStructureRowMapper;
+	
 	public List<SweepStructure> findAll(final Map<String, String> requestInfoMap) throws Exception {
+
+		LOGGER.info("requestInfoMap : {} ", requestInfoMap);
 
 		Object extendedObject = null;
 		JsonNode extendedObjectNode = null;
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		final String finalQuery = "SELECT NBR_STRCID,COD_SUBPROD,COD_PRODUCT,DAT_STRCEFF,NBR_PRIORITY,NBR_INSTRUCTIONS,NBR_STRGRPID,FLG_STRTYPE,DAT_STRCSETUP,FLG_LOCK FROM OLM_STRUCTURE_HEADER";
-		final List<SweepStructure> listOfStructures = jdbcTemplate.query(finalQuery, new SweepStructureRowMapper());
-
-		extendedObject = exSweepStructureSpiService.findAll(null, requestInfoMap, jdbcTemplate);
+		final List<SweepStructure> listOfStructures = jdbcTemplate.query(finalQuery, sweepStructureRowMapper);
+		if (czSwpStructureService != null) {
+			LOGGER.info("Calling  czSwpStructureService");
+			// extendedObject = exSweepStructureSpiService.findAll(null, requestInfoMap,
+			// jdbcTemplate);
+			extendedObject = czSwpStructureService.findAll(null, requestInfoMap, jdbcTemplate);
+		}
 
 		LOGGER.info("extendedObject : {}", extendedObject);
 
@@ -100,14 +111,21 @@ public class SweepStructureRepository {
 		SweepStructure sweeepStructure = null;
 		try {
 			sweeepStructure = namedParameterJdbcTemplate.queryForObject(finalQuery, mapSqlParameterSource,
-					new SweepStructureRowMapper());
+					sweepStructureRowMapper);
 
 		} catch (EmptyResultDataAccessException e) {
 			throw new DataNotFoundException("Structure Id " + structureId + " not found");
 		}
 
-		LOGGER.info("=======> Started findById Extended SweepStructure ");
-		final Object extendedObject = exSweepStructureSpiService.findById(structureId, requestInfoMap, jdbcTemplate);
+		Object extendedObject = null;
+		if (czSwpStructureService != null) {
+
+			LOGGER.info("=======> Started findById Extended SweepStructure ");
+			// extendedObject = exSweepStructureSpiService.findById(structureId,
+			// requestInfoMap, jdbcTemplate);
+			extendedObject = czSwpStructureService.findById(structureId, requestInfoMap, jdbcTemplate);
+			LOGGER.info("=======> Ended findById Extended SweepStructure ");
+		}
 
 		LOGGER.info("findById :: extendedObject : {} ", extendedObject);
 
@@ -115,8 +133,6 @@ public class SweepStructureRepository {
 
 			sweeepStructure.setExtObject(extendedObject);
 		}
-
-		LOGGER.info("=======> Ended findById Extended SweepStructure ");
 
 		LOGGER.info("=======> Started Instructions by structure Id ");
 		List<SweepInstruction> swpInstructions = sweepInstructionRepository.findByStructureId(structureId,
@@ -162,8 +178,19 @@ public class SweepStructureRepository {
 
 				int extendedObject = 0;
 
-				extendedObject = (int) exSweepStructureSpiService.save(sweepStructure.getExtObject(), requestInfoMap,
-						jdbcTemplate);
+				if (czSwpStructureService != null) {
+					LOGGER.info("calling start czSwpStructureService saving method");
+					/*
+					 * extendedObject = (int)
+					 * exSweepStructureSpiService.save(sweepStructure.getExtObject(),
+					 * requestInfoMap, jdbcTemplate);
+					 */
+
+					extendedObject = (int) czSwpStructureService.save(sweepStructure.getExtObject(), requestInfoMap,
+							jdbcTemplate);
+
+					LOGGER.info("calling end czSwpStructureService saving method");
+				}
 
 				LOGGER.info("extendedObject insert Reponse : {}", extendedObject);
 			}
@@ -230,8 +257,20 @@ public class SweepStructureRepository {
 
 				int extendedObject = 0;
 
-				extendedObject = (int) exSweepStructureSpiService.update(sweepStructure.getExtObject(), requestInfoMap,
-						jdbcTemplate);
+				if (czSwpStructureService != null) {
+					LOGGER.info("start calling czSwpStructureService update");
+
+					/*
+					 * extendedObject = (int)
+					 * exSweepStructureSpiService.update(sweepStructure.getExtObject(),
+					 * requestInfoMap, jdbcTemplate);
+					 */
+
+					extendedObject = (int) czSwpStructureService.update(sweepStructure.getExtObject(), requestInfoMap,
+							jdbcTemplate);
+
+					LOGGER.info("end calling czSwpStructureService update");
+				}
 
 				LOGGER.info("extendedObject update Reponse : {}", extendedObject);
 			}

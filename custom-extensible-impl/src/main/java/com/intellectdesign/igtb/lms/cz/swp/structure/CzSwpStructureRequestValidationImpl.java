@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.intellectdesign.igtb.lms.cz.entity.ExSweepStructure;
+import com.intellectdesign.igtb.lms.cz.entity.CzSweepStructure;
 import com.intellectdesign.igtb.lms.cz.swp.structure.CzSwpStructureRequestValidation;
 import com.intellectdesign.igtb.lms.exception.ApiSubError;
 import com.intellectdesign.igtb.lms.exception.ApiValidationError;
@@ -21,13 +21,13 @@ public class CzSwpStructureRequestValidationImpl implements CzSwpStructureReques
 	@Override
 	public List<ApiSubError> validate(final Object input,final Map<String, String> requestInfoMap, final JdbcTemplate jdbcTemplate) throws Exception {
 
-		ExSweepStructure exSwpStructure = null;
+		CzSweepStructure exSwpStructure = null;
 		final ObjectMapper objectMapper = new ObjectMapper();
 		List<ApiSubError> errorList = null;
 
 		final String objectAsString = objectMapper.writeValueAsString(input);
 		System.out.println("ExSwpStructureRequestValidationImpl - validate : objectAsString :: " + objectAsString);
-		exSwpStructure = objectMapper.readValue(objectAsString, ExSweepStructure.class);
+		exSwpStructure = objectMapper.readValue(objectAsString, CzSweepStructure.class);
 
 		if (exSwpStructure != null) {
 

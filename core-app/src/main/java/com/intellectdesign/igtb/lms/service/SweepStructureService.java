@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import com.intellectdesign.igtb.lms.entity.SweepStructure;
 import com.intellectdesign.igtb.lms.exception.ApiSubError;
@@ -15,6 +16,7 @@ import com.intellectdesign.igtb.lms.repository.SweepStructureRepository;
 import com.intellectdesign.igtb.lms.validation.SweepStructureValidation;
 
 @Service
+@RequestScope
 public class SweepStructureService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SweepStructureService.class);

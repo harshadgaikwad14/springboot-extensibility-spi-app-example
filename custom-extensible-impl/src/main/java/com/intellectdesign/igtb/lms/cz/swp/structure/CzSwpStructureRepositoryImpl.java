@@ -7,8 +7,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.intellectdesign.igtb.lms.cz.entity.ExSweepStructure;
-import com.intellectdesign.igtb.lms.cz.rowmapper.ExSwpStructureRowMapper;
+import com.intellectdesign.igtb.lms.cz.entity.CzSweepStructure;
+import com.intellectdesign.igtb.lms.cz.rowmapper.CzSwpStructureRowMapper;
 
 @Repository
 public class CzSwpStructureRepositoryImpl {
@@ -17,18 +17,18 @@ public class CzSwpStructureRepositoryImpl {
 		super();
 	}
 
-	public List<ExSweepStructure> findAll(final Map<String, String> requestInfoMap, final JdbcTemplate jdbcTemplate)
+	public List<CzSweepStructure> findAll(final Map<String, String> requestInfoMap, final JdbcTemplate jdbcTemplate)
 			throws Exception {
 
 		System.out.println("ExSwpStructureRepositoryImpl - findAll");
 
 		final String finalQuery = "SELECT NBR_STRCID,FIELD1,FIELD2,FIELD3 FROM EX_OLM_STRUCTURE_HEADER";
-		final List<ExSweepStructure> exSweepStructures = jdbcTemplate.query(finalQuery, new ExSwpStructureRowMapper());
+		final List<CzSweepStructure> exSweepStructures = jdbcTemplate.query(finalQuery, new CzSwpStructureRowMapper());
 
 		return exSweepStructures;
 	}
 
-	public int save(final ExSweepStructure exSwpStructure, final Map<String, String> requestInfoMap,
+	public int save(final CzSweepStructure exSwpStructure, final Map<String, String> requestInfoMap,
 			final JdbcTemplate jdbcTemplate) throws Exception {
 
 		final int val = jdbcTemplate
@@ -42,15 +42,15 @@ public class CzSwpStructureRepositoryImpl {
 
 	}
 
-	public ExSweepStructure findById(final Long structureId, final Map<String, String> requestInfoMap,
+	public CzSweepStructure findById(final Long structureId, final Map<String, String> requestInfoMap,
 			final JdbcTemplate jdbcTemplate) throws Exception {
 
 		final String finalQuery = "SELECT NBR_STRCID,FIELD1,FIELD2,FIELD3 FROM EX_OLM_STRUCTURE_HEADER WHERE NBR_STRCID = "
 				+ structureId;
 
-		ExSweepStructure exSweepStructure = null;
+		CzSweepStructure exSweepStructure = null;
 		try {
-			exSweepStructure = jdbcTemplate.queryForObject(finalQuery, new ExSwpStructureRowMapper());
+			exSweepStructure = jdbcTemplate.queryForObject(finalQuery, new CzSwpStructureRowMapper());
 
 		} catch (EmptyResultDataAccessException e) {
 			// throw new DataNotFoundException("Sweep Structure Id " + structureId + " not
@@ -63,7 +63,7 @@ public class CzSwpStructureRepositoryImpl {
 
 	}
 
-	public int update(final ExSweepStructure exSwpStructure, final Map<String, String> requestInfoMap,
+	public int update(final CzSweepStructure exSwpStructure, final Map<String, String> requestInfoMap,
 			final JdbcTemplate jdbcTemplate) throws Exception {
 
 		final int val = jdbcTemplate.update("UPDATE EX_OLM_STRUCTURE_HEADER SET FIELD1 = '"

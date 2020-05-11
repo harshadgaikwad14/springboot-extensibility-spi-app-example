@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.serviceloader.ServiceListFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.intellectdesign.igtb.lms.cz.swp.structure.CzSwpStructureBusinessValidation;
 import com.intellectdesign.igtb.lms.cz.swp.structure.CzSwpStructureRequestValidation;
@@ -22,16 +25,14 @@ public class CzSwpStructureConfig {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CzSwpStructureConfig.class);
 
 	@Bean
+	@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 	public CzSwpStructureService<Object> czSwpStructureService() {
 		LOGGER.info("Crating proxy for CzSwpStructureService implementations");
 
 		final List<CzSwpStructureService> czSwpStructureServices = getCzSwpStructureServices();
 		LOGGER.info("Found CzSwpStructureService implementations : {} ", czSwpStructureServices.size());
 
-		for (final CzSwpStructureService exTestService : czSwpStructureServices) {
-
-			LOGGER.info("CzSwpStructureService List Of object : {} ", exTestService.getClass().getName());
-		}
+		czSwpStructureServices.stream().forEach(v -> LOGGER.info("Load Implementation Class : {}", v.getClass().getName()));
 
 		return czSwpStructureServices.stream().findFirst().get();
 
@@ -55,11 +56,13 @@ public class CzSwpStructureConfig {
 	}
 
 	@Bean
+	@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 	public CzSwpStructureBusinessValidation<Object, ApiSubError> czSwpStructureBusinessValidation() {
 		LOGGER.info("Crating proxy for ExTestBusinessValidation implementations");
 
 		final List<CzSwpStructureBusinessValidation> czSwpStructureBusinessValidations = getCzSwpStructureBusinessValidations();
 		LOGGER.info("Found ExTestBusinessValidation implementations : {} ", czSwpStructureBusinessValidations.size());
+		czSwpStructureBusinessValidations.stream().forEach(v -> LOGGER.info("Load Implementation Class : {}", v.getClass().getName()));
 
 		return czSwpStructureBusinessValidations.stream().findFirst().get();
 
@@ -83,12 +86,14 @@ public class CzSwpStructureConfig {
 	}
 
 	@Bean
+	@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 	public CzSwpStructureRequestValidation czSwpStructureRequestValidation() {
 		LOGGER.info("Crating proxy for CzSwpStructureRequestValidation implementations");
 
 		final List<CzSwpStructureRequestValidation> czSwpStructureRequestValidations = getCzSwpStructureRequestValidations();
 		LOGGER.info("Found CzSwpStructureRequestValidation implementations : {} ",
 				czSwpStructureRequestValidations.size());
+		czSwpStructureRequestValidations.stream().forEach(v -> LOGGER.info("Load Implementation Class : {}", v.getClass().getName()));
 
 		return czSwpStructureRequestValidations.stream().findFirst().get();
 		// createProxiedNotificationSendersAsSpringWillNotCreateProxyForThese(senders);

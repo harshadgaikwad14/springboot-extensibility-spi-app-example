@@ -6,11 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import com.intellectdesign.igtb.lms.entity.Test;
 import com.intellectdesign.igtb.lms.repository.TestRepository;
 
 @Service
+@RequestScope
 public class TestService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestService.class);
 

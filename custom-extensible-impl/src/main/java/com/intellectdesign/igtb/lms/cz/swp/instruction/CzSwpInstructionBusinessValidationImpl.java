@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.intellectdesign.igtb.lms.cz.entity.ExSweepInstruction;
+import com.intellectdesign.igtb.lms.cz.entity.CzSweepInstruction;
 import com.intellectdesign.igtb.lms.cz.swp.instruction.CzSwpInstructionBusinessValidation;
 import com.intellectdesign.igtb.lms.exception.ApiSubError;
 import com.intellectdesign.igtb.lms.exception.ApiValidationError;
@@ -22,13 +22,13 @@ public class CzSwpInstructionBusinessValidationImpl implements CzSwpInstructionB
 	public List<ApiSubError> validate(final Object input, final Map<String, String> requestInfoMap,
 			final JdbcTemplate jdbcTemplate) throws Exception {
 
-		ExSweepInstruction exSweepInstruction = null;
+		CzSweepInstruction exSweepInstruction = null;
 		final ObjectMapper objectMapper = new ObjectMapper();
 		List<ApiSubError> errorList = null;
 
 		final String objectAsString = objectMapper.writeValueAsString(input);
-		System.out.println("ExSwpInstructionBusinessValidationImpl - validate : objectAsString :: " + objectAsString);
-		exSweepInstruction = objectMapper.readValue(objectAsString, ExSweepInstruction.class);
+		System.out.println("CzSwpInstructionBusinessValidationImpl - validate : objectAsString :: " + objectAsString);
+		exSweepInstruction = objectMapper.readValue(objectAsString, CzSweepInstruction.class);
 
 		if (exSweepInstruction != null) {
 

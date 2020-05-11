@@ -1,6 +1,5 @@
 package com.intellectdesign.igtb.lms.exception;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import org.slf4j.Logger;

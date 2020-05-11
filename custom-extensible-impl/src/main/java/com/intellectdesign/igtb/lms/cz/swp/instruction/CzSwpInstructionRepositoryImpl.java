@@ -7,8 +7,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.intellectdesign.igtb.lms.cz.entity.ExSweepInstruction;
-import com.intellectdesign.igtb.lms.cz.rowmapper.ExSwpInstructionRowMapper;
+import com.intellectdesign.igtb.lms.cz.entity.CzSweepInstruction;
+import com.intellectdesign.igtb.lms.cz.rowmapper.CzSwpInstructionRowMapper;
 
 @Repository
 public class CzSwpInstructionRepositoryImpl {
@@ -18,27 +18,27 @@ public class CzSwpInstructionRepositoryImpl {
 
 	}
 
-	public List<ExSweepInstruction> findAll(final Map<String, String> requestInfoMap, final JdbcTemplate jdbcTemplate)
+	public List<CzSweepInstruction> findAll(final Map<String, String> requestInfoMap, final JdbcTemplate jdbcTemplate)
 			throws Exception {
 
 		System.out.println("ExSweepStructureSpiImpl - findAll");
 
 		final String finalQuery = "SELECT NBR_STRCID,NBR_INSTRID,FIELD1,FIELD2,FIELD3 FROM EX_OLM_SOURCE_ACCOUNT_DTLS";
-		final List<ExSweepInstruction> exSweepStructures = jdbcTemplate.query(finalQuery,
-				new ExSwpInstructionRowMapper());
+		final List<CzSweepInstruction> exSweepStructures = jdbcTemplate.query(finalQuery,
+				new CzSwpInstructionRowMapper());
 
 		return exSweepStructures;
 	}
 
-	public List<ExSweepInstruction> findByStructureId(final Long structureId, final Map<String, String> requestInfoMap,
+	public List<CzSweepInstruction> findByStructureId(final Long structureId, final Map<String, String> requestInfoMap,
 			final JdbcTemplate jdbcTemplate) throws Exception {
 
 		final String finalQuery = "SELECT NBR_STRCID,NBR_INSTRID,FIELD1,FIELD2,FIELD3 FROM EX_OLM_SOURCE_ACCOUNT_DTLS WHERE NBR_STRCID = "
 				+ structureId;
 
-		List<ExSweepInstruction> exSweepInstructions = null;
+		List<CzSweepInstruction> exSweepInstructions = null;
 		try {
-			exSweepInstructions = jdbcTemplate.query(finalQuery, new ExSwpInstructionRowMapper());
+			exSweepInstructions = jdbcTemplate.query(finalQuery, new CzSwpInstructionRowMapper());
 
 		} catch (EmptyResultDataAccessException e) {
 
@@ -49,7 +49,7 @@ public class CzSwpInstructionRepositoryImpl {
 
 	}
 
-	public int save(final ExSweepInstruction exSweepInstruction, final Map<String, String> requestInfoMap,
+	public int save(final CzSweepInstruction exSweepInstruction, final Map<String, String> requestInfoMap,
 			final JdbcTemplate jdbcTemplate) throws Exception {
 
 		int val = 0;
@@ -66,7 +66,7 @@ public class CzSwpInstructionRepositoryImpl {
 
 	}
 
-	public int update(final ExSweepInstruction exSwpInstr, final Map<String, String> requestInfoMap,
+	public int update(final CzSweepInstruction exSwpInstr, final Map<String, String> requestInfoMap,
 			final JdbcTemplate jdbcTemplate) throws Exception {
 
 		int val = jdbcTemplate.update("UPDATE EX_OLM_SOURCE_ACCOUNT_DTLS SET FIELD1 = '" + exSwpInstr.getExtField1()

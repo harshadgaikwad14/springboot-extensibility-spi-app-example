@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.intellectdesign.igtb.lms.cz.entity.ExSweepInstruction;
+import com.intellectdesign.igtb.lms.cz.entity.CzSweepInstruction;
 import com.intellectdesign.igtb.lms.cz.swp.instruction.CzSwpInstructionService;
 
 public class CzSwpInstructionServiceImpl implements CzSwpInstructionService<Object> {
@@ -40,12 +40,12 @@ public class CzSwpInstructionServiceImpl implements CzSwpInstructionService<Obje
 	public int save(final Object object, final Map<String, String> requestInfoMap, final JdbcTemplate jdbcTemplate)
 			throws Exception {
 
-		ExSweepInstruction exSwpInstruction = null;
+		CzSweepInstruction exSwpInstruction = null;
 		final ObjectMapper objectMapper = new ObjectMapper();
 
 		final String objectAsString = objectMapper.writeValueAsString(object);
 		System.out.println("ExSweepStructureSpiImpl - save : objectAsString :: " + objectAsString);
-		exSwpInstruction = objectMapper.readValue(objectAsString, ExSweepInstruction.class);
+		exSwpInstruction = objectMapper.readValue(objectAsString, CzSweepInstruction.class);
 
 		return exSwpInstructionRepositoryImpl.save(exSwpInstruction, requestInfoMap, jdbcTemplate);
 
@@ -55,12 +55,12 @@ public class CzSwpInstructionServiceImpl implements CzSwpInstructionService<Obje
 	public int update(final Object object, final Map<String, String> requestInfoMap, final JdbcTemplate jdbcTemplate)
 			throws Exception {
 
-		ExSweepInstruction exSwpInstr = null;
+		CzSweepInstruction exSwpInstr = null;
 		final ObjectMapper objectMapper = new ObjectMapper();
 
 		final String objectAsString = objectMapper.writeValueAsString(object);
 		System.out.println("ExSweepStructureSpiImpl - update : objectAsString :: " + objectAsString);
-		exSwpInstr = objectMapper.readValue(objectAsString, ExSweepInstruction.class);
+		exSwpInstr = objectMapper.readValue(objectAsString, CzSweepInstruction.class);
 
 		return exSwpInstructionRepositoryImpl.update(exSwpInstr, requestInfoMap, jdbcTemplate);
 

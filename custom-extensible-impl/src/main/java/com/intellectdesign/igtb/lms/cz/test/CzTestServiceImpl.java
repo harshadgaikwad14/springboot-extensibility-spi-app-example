@@ -1,22 +1,27 @@
 package com.intellectdesign.igtb.lms.cz.test;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import com.intellectdesign.igtb.lms.cz.entity.ExTest;
+import com.intellectdesign.igtb.lms.cz.entity.CzTest;
 
 public class CzTestServiceImpl implements CzTestService<Object> {
 
 	private static final Logger LOGGER = Logger.getLogger(CzTestServiceImpl.class.getName());
 
+	
 	@Autowired
 	private CzTestRepository<Object> exTestRepositoryImpl;
 
 	public CzTestServiceImpl() {
+
 		super();
+		final String dateTimeString = LocalDateTime.now().toString();
+		System.out.println("$$$$$$$$$$$$$ CzTestServiceImpl - dateTimeString :  " + dateTimeString);
 	}
 
 	@Override
@@ -28,10 +33,10 @@ public class CzTestServiceImpl implements CzTestService<Object> {
 	}
 
 	@Override
-	public ExTest findById(final Object exTest, final Map<String, String> requestInfoMap,
+	public CzTest findById(final Object exTest, final Map<String, String> requestInfoMap,
 			final JdbcTemplate jdbcTemplate) throws Exception {
 		LOGGER.info("ExTestRepositoryImpl - findById - ExTest : " + exTest);
 
-		return (ExTest) exTestRepositoryImpl.findById(exTest, requestInfoMap, jdbcTemplate);
+		return (CzTest) exTestRepositoryImpl.findById(exTest, requestInfoMap, jdbcTemplate);
 	}
 }

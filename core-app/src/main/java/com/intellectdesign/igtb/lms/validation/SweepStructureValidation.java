@@ -9,14 +9,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 
-import com.intellectdesign.igtb.lms.ExSweepStructureSpi;
+import com.intellectdesign.igtb.lms.cz.swp.structure.CzSwpStructureRequestValidation;
 import com.intellectdesign.igtb.lms.entity.SweepInstruction;
 import com.intellectdesign.igtb.lms.entity.SweepStructure;
 import com.intellectdesign.igtb.lms.exception.ApiSubError;
 import com.intellectdesign.igtb.lms.exception.ApiValidationError;
 
 @Component
+@RequestScope
 public class SweepStructureValidation {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SweepStructureValidation.class);
@@ -25,10 +27,10 @@ public class SweepStructureValidation {
 	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
-	private ExSweepStructureSpi exSweepStructureSpiService;
+	private SweepInstructionValidation sweepInstructionValidation;
 
 	@Autowired
-	private SweepInstructionValidation sweepInstructionValidation;
+	private CzSwpStructureRequestValidation<Object, ApiSubError> czSwpStructureRequestValidation;
 
 	public List<ApiSubError> validate(final SweepStructure sweepStructure, final Map<String, String> requestInfoMap)
 			throws Exception {
@@ -42,8 +44,16 @@ public class SweepStructureValidation {
 		if (requestMethod.equalsIgnoreCase("POST")) {
 			if (sweepStructure.getExtObject() != null) {
 
-				List<ApiSubError> extendedObjectErrorList = exSweepStructureSpiService
-						.validate(sweepStructure.getExtObject(), requestInfoMap, jdbcTemplate);
+				List<ApiSubError> extendedObjectErrorList = null;
+				if (czSwpStructureRequestValidation != null) {
+
+					LOGGER.info("start calling czSwpStructureRequestValidation validate");
+					extendedObjectErrorList = czSwpStructureRequestValidation.validate(sweepStructure.getExtObject(),
+							requestInfoMap, jdbcTemplate);
+					
+					LOGGER.info("end calling czSwpStructureRequestValidation validate");
+				}
+
 				LOGGER.info("extendedObjectErrorList {} ", extendedObjectErrorList);
 				if (extendedObjectErrorList != null) {
 					errorList.addAll(extendedObjectErrorList);

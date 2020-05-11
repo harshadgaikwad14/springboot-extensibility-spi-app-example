@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.intellectdesign.igtb.lms.cz.entity.ExTest;
+import com.intellectdesign.igtb.lms.cz.entity.CzTest;
 import com.intellectdesign.igtb.lms.cz.test.CzTestRepository;
 
 @Component
@@ -21,12 +21,12 @@ public class CzTestRepositoryImpl implements CzTestRepository<Object> {
 
 		System.out.println("ExTestRepositoryImpl - save - ExTest : " + exTest);
 		
-		ExTest exTest2= null;
+		CzTest exTest2= null;
 		final ObjectMapper objectMapper = new ObjectMapper();
 
 		final String objectAsString = objectMapper.writeValueAsString(exTest);
 		System.out.println("ExSweepStructureSpiImpl - save : objectAsString :: " + objectAsString);
-		exTest2 = objectMapper.readValue(objectAsString, ExTest.class);
+		exTest2 = objectMapper.readValue(objectAsString, CzTest.class);
 		
 		if (exTest2 != null)
 			return 1;
@@ -34,11 +34,11 @@ public class CzTestRepositoryImpl implements CzTestRepository<Object> {
 	}
 
 	@Override
-	public ExTest findById(final Object exTest, final Map<String, String> requestInfoMap,
+	public CzTest findById(final Object exTest, final Map<String, String> requestInfoMap,
 			final JdbcTemplate jdbcTemplate) throws Exception {
 		System.out.println("ExTestRepositoryImpl - findById - ExTest : " + exTest);
 
-		final ExTest ex = new ExTest();
+		final CzTest ex = new CzTest();
 		ex.setId(101l);
 		ex.setExtField1("Hard Coded Result");
 		return ex;

@@ -1,5 +1,7 @@
 package com.intellectdesign.igtb.lms.configuration;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,19 +13,29 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 @Component
 public class RequestInfo {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RequestInfo.class);
 
-	public Map<String, String> getRequestInfo(final HttpServletRequest request) {
+	public Map<String, String> getRequestInfo(final HttpServletRequest request) throws IOException {
 		LOGGER.info("********* REQUEST INFORAMTION **************");
 
 		final Map<String, String> requestInfoMap = new HashMap<>();
 		requestInfoMap.put("method", request.getMethod());
 		requestInfoMap.put("uri", request.getRequestURI());
 		requestInfoMap.put("client", request.getRemoteAddr());
+		/*
+		 * final ContentCachingRequestWrapper requestWrapper =
+		 * (ContentCachingRequestWrapper) request;
+		 * 
+		 * final String requestBody = new
+		 * String(requestWrapper.getContentAsByteArray());
+		 * 
+		 * requestInfoMap.put("body", requestBody);
+		 */
 
 		final Map<String, String[]> params = request.getParameterMap();
 		final Iterator<String> i = params.keySet().iterator();
@@ -46,7 +58,7 @@ public class RequestInfo {
 
 			LOGGER.info("****> Name : {} - Value : {} ", map.getKey(), map.getValue());
 		}
-		
+
 		return requestInfoMap;
 	}
 

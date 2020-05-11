@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.serviceloader.ServiceListFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.intellectdesign.igtb.lms.cz.test.CzTestBusinessValidation;
 import com.intellectdesign.igtb.lms.cz.test.CzTestRequestValidation;
@@ -20,18 +23,21 @@ public class CzTestConfig {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CzTestConfig.class);
 
 	@Bean
+	@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 	public CzTestService<Object> czTestService() {
 		LOGGER.info("Crating proxy for CzTestService implementations");
 
 		final List<CzTestService> czTestServices = getCzTestServices();
 		LOGGER.info("Found CzTestService implementations : {} ", czTestServices.size());
 
-		for (final CzTestService exTestService : czTestServices) {
+		if (czTestServices != null) {
 
-			LOGGER.info("List Of object : {} ", exTestService.getClass().getName());
+			czTestServices.stream().forEach(v -> LOGGER.info("Load Implementation Class : {}", v.getClass().getName()));
+			return czTestServices.stream().findFirst().get();
 		}
 
-		return czTestServices.stream().findFirst().get();
+		return null;
+
 		// createProxiedNotificationSendersAsSpringWillNotCreateProxyForThese(senders);
 	}
 
@@ -53,18 +59,16 @@ public class CzTestConfig {
 	}
 
 	@Bean
+	@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 	public CzTestBusinessValidation<Object, ApiSubError> czTestBusinessValidation() {
 		LOGGER.info("Crating proxy for CzTestBusinessValidation implementations");
 
-		final List<CzTestBusinessValidation> list = getCzTestBuisinessValidations();
-		LOGGER.info("Found CzTestBusinessValidation implementations : {} ", list.size());
+		final List<CzTestBusinessValidation> czTestBusinessValidations = getCzTestBuisinessValidations();
+		LOGGER.info("Found CzTestBusinessValidation implementations : {} ", czTestBusinessValidations.size());
 
-		CzTestBusinessValidation<Object, ApiSubError> czTestBusinessValidation = null;
-		if (!list.isEmpty()) {
-			czTestBusinessValidation = list.stream().findFirst().get();
-		}
-
-		return czTestBusinessValidation;
+		czTestBusinessValidations.stream()
+				.forEach(v -> LOGGER.info("Load Implementation Class : {}", v.getClass().getName()));
+		return czTestBusinessValidations.stream().findFirst().get();
 		// createProxiedNotificationSendersAsSpringWillNotCreateProxyForThese(senders);
 	}
 
@@ -86,11 +90,14 @@ public class CzTestConfig {
 	}
 
 	@Bean
+	@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 	public CzTestRequestValidation czTestRequestValidation() {
 		LOGGER.info("Crating proxy for CzTestRequestValidation implementations");
 
 		final List<CzTestRequestValidation> czTestRequestValidations = getCzTestRequestValidations();
 		LOGGER.info("Found CzTestRequestValidation implementations : {} ", czTestRequestValidations.size());
+		czTestRequestValidations.stream()
+				.forEach(v -> LOGGER.info("Load Implementation Class : {}", v.getClass().getName()));
 
 		return czTestRequestValidations.stream().findFirst().get();
 		// createProxiedNotificationSendersAsSpringWillNotCreateProxyForThese(senders);

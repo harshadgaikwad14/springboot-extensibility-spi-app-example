@@ -8,10 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.serviceloader.ServiceListFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.web.context.WebApplicationContext;
 
-import com.intellectdesign.igtb.lms.cz.test.CzTestBusinessValidation;
-import com.intellectdesign.igtb.lms.cz.test.CzTestRequestValidation;
-import com.intellectdesign.igtb.lms.cz.test.CzTestService;
+import com.intellectdesign.igtb.lms.cz.swp.instruction.CzSwpInstructionBusinessValidation;
+import com.intellectdesign.igtb.lms.cz.swp.instruction.CzSwpInstructionRequestValidation;
+import com.intellectdesign.igtb.lms.cz.swp.instruction.CzSwpInstructionService;
 import com.intellectdesign.igtb.lms.exception.ApiSubError;
 
 @Configuration
@@ -20,32 +23,30 @@ public class CzSwpInstructionConfig {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CzSwpInstructionConfig.class);
 
 	@Bean
-	public CzTestService<Object> exTestService() {
-		LOGGER.info("Crating proxy for ExTestService implementations");
+	@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
+	public CzSwpInstructionService<Object> czSwpInstructionService() {
+		LOGGER.info("Crating proxy for CzSwpInstructionService implementations");
 
-		final List<CzTestService> exTestRepositories = getExTestServices();
-		LOGGER.info("Found ExTestService implementations : {} ", exTestRepositories.size());
+		final List<CzSwpInstructionService> czSwpInstructionServices = getCzSwpInstructionServices();
+		LOGGER.info("Found CzSwpInstructionService implementations : {} ", czSwpInstructionServices.size());
 
-		for (final CzTestService exTestService : exTestRepositories) {
+		czSwpInstructionServices.stream().forEach(v -> LOGGER.info("Load Implementation Class : {}", v.getClass().getName()));
 
-			LOGGER.info("List Of object : {} ", exTestService.getClass().getName());
-		}
-
-		return exTestRepositories.stream().findFirst().get();
+		return czSwpInstructionServices.stream().findFirst().get();
 		// createProxiedNotificationSendersAsSpringWillNotCreateProxyForThese(senders);
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<CzTestService> getExTestServices() {
-		List<CzTestService> senders = new ArrayList<>();
+	private List<CzSwpInstructionService> getCzSwpInstructionServices() {
+		List<CzSwpInstructionService> senders = new ArrayList<>();
 		try {
 			final ServiceListFactoryBean serviceListFactoryBean = new ServiceListFactoryBean();
-			serviceListFactoryBean.setServiceType(CzTestService.class);
+			serviceListFactoryBean.setServiceType(CzSwpInstructionService.class);
 			serviceListFactoryBean.afterPropertiesSet();
 
-			senders = (List<CzTestService>) serviceListFactoryBean.getObject();
+			senders = (List<CzSwpInstructionService>) serviceListFactoryBean.getObject();
 		} catch (Exception ex) {
-			LOGGER.info("Unable to retrieve ExTestService implementations : {} ", ex.getMessage());
+			LOGGER.info("Unable to retrieve CzSwpInstructionService implementations : {} ", ex.getMessage());
 			ex.printStackTrace();
 		}
 
@@ -53,32 +54,31 @@ public class CzSwpInstructionConfig {
 	}
 
 	@Bean
-	public CzTestBusinessValidation<Object, ApiSubError> exTestBusinessValidation() {
-		LOGGER.info("Crating proxy for ExTestBusinessValidation implementations");
+	@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
+	public CzSwpInstructionBusinessValidation<Object, ApiSubError> exTestBusinessValidation() {
+		LOGGER.info("Crating proxy for CzSwpInstructionBusinessValidation implementations");
 
-		final List<CzTestBusinessValidation> list = getExTestBuisinessValidations();
-		LOGGER.info("Found ExTestBusinessValidation implementations : {} ", list.size());
+		final List<CzSwpInstructionBusinessValidation> czSwpInstructionBusinessValidations = getCzSwpInstructionBusinessValidations();
+		LOGGER.info("Found CzSwpInstructionBusinessValidation implementations : {} ",
+				czSwpInstructionBusinessValidations.size());
+		
+		czSwpInstructionBusinessValidations.stream().forEach(v -> LOGGER.info("Load Implementation Class : {}", v.getClass().getName()));
 
-		CzTestBusinessValidation<Object, ApiSubError> exTestBusinessValidation = null;
-		if (!list.isEmpty()) {
-			exTestBusinessValidation = list.stream().findFirst().get();
-		}
-
-		return exTestBusinessValidation;
+		return czSwpInstructionBusinessValidations.stream().findFirst().get();
 		// createProxiedNotificationSendersAsSpringWillNotCreateProxyForThese(senders);
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<CzTestBusinessValidation> getExTestBuisinessValidations() {
-		List<CzTestBusinessValidation> senders = new ArrayList<>();
+	private List<CzSwpInstructionBusinessValidation> getCzSwpInstructionBusinessValidations() {
+		List<CzSwpInstructionBusinessValidation> senders = new ArrayList<>();
 		try {
 			final ServiceListFactoryBean serviceListFactoryBean = new ServiceListFactoryBean();
-			serviceListFactoryBean.setServiceType(CzTestBusinessValidation.class);
+			serviceListFactoryBean.setServiceType(CzSwpInstructionBusinessValidation.class);
 			serviceListFactoryBean.afterPropertiesSet();
 
-			senders = (List<CzTestBusinessValidation>) serviceListFactoryBean.getObject();
+			senders = (List<CzSwpInstructionBusinessValidation>) serviceListFactoryBean.getObject();
 		} catch (Exception ex) {
-			LOGGER.info("Unable to retrieve ExTestBuisinessValidation implementations : {} ", ex.getMessage());
+			LOGGER.info("Unable to retrieve CzSwpInstructionBusinessValidation implementations : {} ", ex.getMessage());
 			ex.printStackTrace();
 		}
 
@@ -86,27 +86,31 @@ public class CzSwpInstructionConfig {
 	}
 
 	@Bean
-	public CzTestRequestValidation exTestRequestValidation() {
-		LOGGER.info("Crating proxy for ExTestRequestValidation implementations");
+	@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
+	public CzSwpInstructionRequestValidation czSwpInstructionRequestValidation() {
+		LOGGER.info("Crating proxy for CzSwpInstructionRequestValidation implementations");
 
-		final List<CzTestRequestValidation> exTestRepositories = getExTestRequestValidations();
-		LOGGER.info("Found ExTestRequestValidation implementations : {} ", exTestRepositories.size());
+		final List<CzSwpInstructionRequestValidation> czSwpInstructionRequestValidation = getCzSwpInstructionRequestValidations();
+		LOGGER.info("Found CzSwpInstructionRequestValidation implementations : {} ",
+				czSwpInstructionRequestValidation.size());
+		
+		czSwpInstructionRequestValidation.stream().forEach(v -> LOGGER.info("Load Implementation Class : {}", v.getClass().getName()));
 
-		return exTestRepositories.stream().findFirst().get();
+		return czSwpInstructionRequestValidation.stream().findFirst().get();
 		// createProxiedNotificationSendersAsSpringWillNotCreateProxyForThese(senders);
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<CzTestRequestValidation> getExTestRequestValidations() {
-		List<CzTestRequestValidation> senders = new ArrayList<>();
+	private List<CzSwpInstructionRequestValidation> getCzSwpInstructionRequestValidations() {
+		List<CzSwpInstructionRequestValidation> senders = new ArrayList<>();
 		try {
 			final ServiceListFactoryBean serviceListFactoryBean = new ServiceListFactoryBean();
-			serviceListFactoryBean.setServiceType(CzTestRequestValidation.class);
+			serviceListFactoryBean.setServiceType(CzSwpInstructionRequestValidation.class);
 			serviceListFactoryBean.afterPropertiesSet();
 
-			senders = (List<CzTestRequestValidation>) serviceListFactoryBean.getObject();
+			senders = (List<CzSwpInstructionRequestValidation>) serviceListFactoryBean.getObject();
 		} catch (Exception ex) {
-			LOGGER.info("Unable to retrieve ExTestRequestValidation implementations : {} ", ex.getMessage());
+			LOGGER.info("Unable to retrieve CzSwpInstructionRequestValidation implementations : {} ", ex.getMessage());
 			ex.printStackTrace();
 		}
 

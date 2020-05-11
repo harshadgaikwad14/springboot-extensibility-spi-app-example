@@ -7,11 +7,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.context.annotation.RequestScope;
 
 import com.intellectdesign.igtb.lms.cz.test.CzTestService;
 import com.intellectdesign.igtb.lms.entity.Test;
 
 @Repository
+@RequestScope
 public class TestRepository implements EntityRepository<Test> {
 
 	@Autowired
@@ -44,7 +46,9 @@ public class TestRepository implements EntityRepository<Test> {
 		LOGGER.info("czTestService : {} ", czTestService);
 		Object exTestResponse = null;
 		if (czTestService != null) {
+			LOGGER.info("czTestService is calling");
 			exTestResponse = czTestService.findById(null, requestInfoMap, jdbcTemplate);
+			LOGGER.info("czTestService is end");
 		}
 		final Test t = new Test();
 		t.setId(101l);
